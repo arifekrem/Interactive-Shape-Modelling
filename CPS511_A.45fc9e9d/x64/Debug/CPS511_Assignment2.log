@@ -1,41 +1,39 @@
 ﻿  surfaceModeller.cpp
-C:\Users\Alden\Desktop\CPS511\Assignment 2\CPS511_Assignment2\surfaceModeller.cpp(150,64): warning C4244: 'argument': conversion from 'GLdouble' to 'GLfloat', possible loss of data
-C:\Users\Alden\Desktop\CPS511\Assignment 2\CPS511_Assignment2\surfaceModeller.cpp(150,37): warning C4244: 'argument': conversion from 'GLdouble' to 'GLfloat', possible loss of data
-C:\Users\Alden\Desktop\CPS511\Assignment 2\CPS511_Assignment2\surfaceModeller.cpp(162,66): warning C4244: 'argument': conversion from 'GLdouble' to 'GLfloat', possible loss of data
-C:\Users\Alden\Desktop\CPS511\Assignment 2\CPS511_Assignment2\surfaceModeller.cpp(162,39): warning C4244: 'argument': conversion from 'GLdouble' to 'GLfloat', possible loss of data
-C:\Users\Alden\Desktop\CPS511\Assignment 2\CPS511_Assignment2\surfaceModeller.cpp(170,72): warning C4244: 'argument': conversion from 'GLdouble' to 'GLfloat', possible loss of data
-C:\Users\Alden\Desktop\CPS511\Assignment 2\CPS511_Assignment2\surfaceModeller.cpp(170,42): warning C4244: 'argument': conversion from 'GLdouble' to 'GLfloat', possible loss of data
-C:\Users\Alden\Desktop\CPS511\Assignment 2\CPS511_Assignment2\surfaceModeller.cpp(178,71): warning C4244: 'argument': conversion from 'GLdouble' to 'GLfloat', possible loss of data
-C:\Users\Alden\Desktop\CPS511\Assignment 2\CPS511_Assignment2\surfaceModeller.cpp(178,41): warning C4244: 'argument': conversion from 'GLdouble' to 'GLfloat', possible loss of data
-C:\Users\Alden\Desktop\CPS511\Assignment 2\CPS511_Assignment2\surfaceModeller.cpp(351,11): warning C4101: 'worldViewableHeight': unreferenced local variable
-C:\Users\Alden\Desktop\CPS511\Assignment 2\CPS511_Assignment2\surfaceModeller.cpp(350,11): warning C4101: 'worldViewableWidth': unreferenced local variable
-C:\Users\Alden\Desktop\CPS511\Assignment 2\CPS511_Assignment2\surfaceModeller.cpp(413,6): warning C4101: 'i': unreferenced local variable
-C:\Users\Alden\Desktop\CPS511\Assignment 2\CPS511_Assignment2\surfaceModeller.cpp(526,33): warning C4305: 'initializing': truncation from 'double' to 'GLfloat'
-C:\Users\Alden\Desktop\CPS511\Assignment 2\CPS511_Assignment2\surfaceModeller.cpp(526,38): warning C4305: 'initializing': truncation from 'double' to 'GLfloat'
-C:\Users\Alden\Desktop\CPS511\Assignment 2\CPS511_Assignment2\surfaceModeller.cpp(526,43): warning C4305: 'initializing': truncation from 'double' to 'GLfloat'
-C:\Users\Alden\Desktop\CPS511\Assignment 2\CPS511_Assignment2\surfaceModeller.cpp(527,34): warning C4305: 'initializing': truncation from 'double' to 'GLfloat'
-C:\Users\Alden\Desktop\CPS511\Assignment 2\CPS511_Assignment2\surfaceModeller.cpp(527,40): warning C4305: 'initializing': truncation from 'double' to 'GLfloat'
-C:\Users\Alden\Desktop\CPS511\Assignment 2\CPS511_Assignment2\surfaceModeller.cpp(527,46): warning C4305: 'initializing': truncation from 'double' to 'GLfloat'
-C:\Users\Alden\Desktop\CPS511\Assignment 2\CPS511_Assignment2\surfaceModeller.cpp(528,33): warning C4305: 'initializing': truncation from 'double' to 'GLfloat'
-C:\Users\Alden\Desktop\CPS511\Assignment 2\CPS511_Assignment2\surfaceModeller.cpp(528,38): warning C4305: 'initializing': truncation from 'double' to 'GLfloat'
-C:\Users\Alden\Desktop\CPS511\Assignment 2\CPS511_Assignment2\surfaceModeller.cpp(528,43): warning C4305: 'initializing': truncation from 'double' to 'GLfloat'
-C:\Users\Alden\Desktop\CPS511\Assignment 2\CPS511_Assignment2\surfaceModeller.cpp(545,32): warning C4305: 'initializing': truncation from 'double' to 'GLfloat'
-C:\Users\Alden\Desktop\CPS511\Assignment 2\CPS511_Assignment2\surfaceModeller.cpp(545,38): warning C4305: 'initializing': truncation from 'double' to 'GLfloat'
-C:\Users\Alden\Desktop\CPS511\Assignment 2\CPS511_Assignment2\surfaceModeller.cpp(545,44): warning C4305: 'initializing': truncation from 'double' to 'GLfloat'
-C:\Users\Alden\Desktop\CPS511\Assignment 2\CPS511_Assignment2\surfaceModeller.cpp(546,31): warning C4305: 'initializing': truncation from 'double' to 'GLfloat'
-C:\Users\Alden\Desktop\CPS511\Assignment 2\CPS511_Assignment2\surfaceModeller.cpp(546,36): warning C4305: 'initializing': truncation from 'double' to 'GLfloat'
-C:\Users\Alden\Desktop\CPS511\Assignment 2\CPS511_Assignment2\surfaceModeller.cpp(546,42): warning C4305: 'initializing': truncation from 'double' to 'GLfloat'
-C:\Users\Alden\Desktop\CPS511\Assignment 2\CPS511_Assignment2\surfaceModeller.cpp(690,15): warning C4101: 'newZ': unreferenced local variable
-C:\Users\Alden\Desktop\CPS511\Assignment 2\CPS511_Assignment2\surfaceModeller.cpp(690,9): warning C4101: 'newX': unreferenced local variable
-C:\Users\Alden\Desktop\CPS511\Assignment 2\CPS511_Assignment2\surfaceModeller.cpp(824,16): warning C4101: 'i': unreferenced local variable
-C:\Users\Alden\Desktop\CPS511\Assignment 2\CPS511_Assignment2\surfaceModeller.cpp(865,66): warning C4244: 'argument': conversion from 'GLdouble' to 'GLfloat', possible loss of data
-C:\Users\Alden\Desktop\CPS511\Assignment 2\CPS511_Assignment2\surfaceModeller.cpp(865,48): warning C4244: 'argument': conversion from 'GLdouble' to 'GLfloat', possible loss of data
-C:\Users\Alden\Desktop\CPS511\Assignment 2\CPS511_Assignment2\surfaceModeller.cpp(865,30): warning C4244: 'argument': conversion from 'GLdouble' to 'GLfloat', possible loss of data
-C:\Users\Alden\Desktop\CPS511\Assignment 2\CPS511_Assignment2\surfaceModeller.cpp(866,44): warning C4244: 'argument': conversion from 'GLdouble' to 'GLfloat', possible loss of data
-C:\Users\Alden\Desktop\CPS511\Assignment 2\CPS511_Assignment2\surfaceModeller.cpp(866,33): warning C4244: 'argument': conversion from 'GLdouble' to 'GLfloat', possible loss of data
-C:\Users\Alden\Desktop\CPS511\Assignment 2\CPS511_Assignment2\surfaceModeller.cpp(866,22): warning C4244: 'argument': conversion from 'GLdouble' to 'GLfloat', possible loss of data
-C:\Users\Alden\Desktop\CPS511\Assignment 2\CPS511_Assignment2\surfaceModeller.cpp(902,39): warning C4244: 'return': conversion from 'GLdouble' to 'float', possible loss of data
-  CPS511_Assignment2.vcxproj -> C:\Users\Alden\Desktop\CPS511\Assignment 2\CPS511_Assignment2\x64\Debug\CPS511_Assignment2.exe
-  The system cannot find the file specified.
-C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB3073: The command "copy C:\Users\Alden\Desktop\CPS511\Assignment 2\CPS511_Assignment2\Dependencies\freeglut\bin\x64\freeglut.dll C:\Users\Alden\Desktop\CPS511\Assignment 2\CPS511_Assignment2\x64\Debug\
-C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB3073: :VCEnd" exited with code 1.
+C:\Users\Alden\Desktop\CPS511\Assignment 2\cps511A2\surfaceModeller.cpp(150,64): warning C4244: 'argument': conversion from 'GLdouble' to 'GLfloat', possible loss of data
+C:\Users\Alden\Desktop\CPS511\Assignment 2\cps511A2\surfaceModeller.cpp(150,37): warning C4244: 'argument': conversion from 'GLdouble' to 'GLfloat', possible loss of data
+C:\Users\Alden\Desktop\CPS511\Assignment 2\cps511A2\surfaceModeller.cpp(162,66): warning C4244: 'argument': conversion from 'GLdouble' to 'GLfloat', possible loss of data
+C:\Users\Alden\Desktop\CPS511\Assignment 2\cps511A2\surfaceModeller.cpp(162,39): warning C4244: 'argument': conversion from 'GLdouble' to 'GLfloat', possible loss of data
+C:\Users\Alden\Desktop\CPS511\Assignment 2\cps511A2\surfaceModeller.cpp(170,72): warning C4244: 'argument': conversion from 'GLdouble' to 'GLfloat', possible loss of data
+C:\Users\Alden\Desktop\CPS511\Assignment 2\cps511A2\surfaceModeller.cpp(170,42): warning C4244: 'argument': conversion from 'GLdouble' to 'GLfloat', possible loss of data
+C:\Users\Alden\Desktop\CPS511\Assignment 2\cps511A2\surfaceModeller.cpp(178,71): warning C4244: 'argument': conversion from 'GLdouble' to 'GLfloat', possible loss of data
+C:\Users\Alden\Desktop\CPS511\Assignment 2\cps511A2\surfaceModeller.cpp(178,41): warning C4244: 'argument': conversion from 'GLdouble' to 'GLfloat', possible loss of data
+C:\Users\Alden\Desktop\CPS511\Assignment 2\cps511A2\surfaceModeller.cpp(351,11): warning C4101: 'worldViewableHeight': unreferenced local variable
+C:\Users\Alden\Desktop\CPS511\Assignment 2\cps511A2\surfaceModeller.cpp(350,11): warning C4101: 'worldViewableWidth': unreferenced local variable
+C:\Users\Alden\Desktop\CPS511\Assignment 2\cps511A2\surfaceModeller.cpp(413,6): warning C4101: 'i': unreferenced local variable
+C:\Users\Alden\Desktop\CPS511\Assignment 2\cps511A2\surfaceModeller.cpp(526,33): warning C4305: 'initializing': truncation from 'double' to 'GLfloat'
+C:\Users\Alden\Desktop\CPS511\Assignment 2\cps511A2\surfaceModeller.cpp(526,38): warning C4305: 'initializing': truncation from 'double' to 'GLfloat'
+C:\Users\Alden\Desktop\CPS511\Assignment 2\cps511A2\surfaceModeller.cpp(526,43): warning C4305: 'initializing': truncation from 'double' to 'GLfloat'
+C:\Users\Alden\Desktop\CPS511\Assignment 2\cps511A2\surfaceModeller.cpp(527,34): warning C4305: 'initializing': truncation from 'double' to 'GLfloat'
+C:\Users\Alden\Desktop\CPS511\Assignment 2\cps511A2\surfaceModeller.cpp(527,40): warning C4305: 'initializing': truncation from 'double' to 'GLfloat'
+C:\Users\Alden\Desktop\CPS511\Assignment 2\cps511A2\surfaceModeller.cpp(527,46): warning C4305: 'initializing': truncation from 'double' to 'GLfloat'
+C:\Users\Alden\Desktop\CPS511\Assignment 2\cps511A2\surfaceModeller.cpp(528,33): warning C4305: 'initializing': truncation from 'double' to 'GLfloat'
+C:\Users\Alden\Desktop\CPS511\Assignment 2\cps511A2\surfaceModeller.cpp(528,38): warning C4305: 'initializing': truncation from 'double' to 'GLfloat'
+C:\Users\Alden\Desktop\CPS511\Assignment 2\cps511A2\surfaceModeller.cpp(528,43): warning C4305: 'initializing': truncation from 'double' to 'GLfloat'
+C:\Users\Alden\Desktop\CPS511\Assignment 2\cps511A2\surfaceModeller.cpp(545,32): warning C4305: 'initializing': truncation from 'double' to 'GLfloat'
+C:\Users\Alden\Desktop\CPS511\Assignment 2\cps511A2\surfaceModeller.cpp(545,38): warning C4305: 'initializing': truncation from 'double' to 'GLfloat'
+C:\Users\Alden\Desktop\CPS511\Assignment 2\cps511A2\surfaceModeller.cpp(545,44): warning C4305: 'initializing': truncation from 'double' to 'GLfloat'
+C:\Users\Alden\Desktop\CPS511\Assignment 2\cps511A2\surfaceModeller.cpp(546,31): warning C4305: 'initializing': truncation from 'double' to 'GLfloat'
+C:\Users\Alden\Desktop\CPS511\Assignment 2\cps511A2\surfaceModeller.cpp(546,36): warning C4305: 'initializing': truncation from 'double' to 'GLfloat'
+C:\Users\Alden\Desktop\CPS511\Assignment 2\cps511A2\surfaceModeller.cpp(546,42): warning C4305: 'initializing': truncation from 'double' to 'GLfloat'
+C:\Users\Alden\Desktop\CPS511\Assignment 2\cps511A2\surfaceModeller.cpp(690,15): warning C4101: 'newZ': unreferenced local variable
+C:\Users\Alden\Desktop\CPS511\Assignment 2\cps511A2\surfaceModeller.cpp(690,9): warning C4101: 'newX': unreferenced local variable
+C:\Users\Alden\Desktop\CPS511\Assignment 2\cps511A2\surfaceModeller.cpp(824,16): warning C4101: 'i': unreferenced local variable
+C:\Users\Alden\Desktop\CPS511\Assignment 2\cps511A2\surfaceModeller.cpp(865,66): warning C4244: 'argument': conversion from 'GLdouble' to 'GLfloat', possible loss of data
+C:\Users\Alden\Desktop\CPS511\Assignment 2\cps511A2\surfaceModeller.cpp(865,48): warning C4244: 'argument': conversion from 'GLdouble' to 'GLfloat', possible loss of data
+C:\Users\Alden\Desktop\CPS511\Assignment 2\cps511A2\surfaceModeller.cpp(865,30): warning C4244: 'argument': conversion from 'GLdouble' to 'GLfloat', possible loss of data
+C:\Users\Alden\Desktop\CPS511\Assignment 2\cps511A2\surfaceModeller.cpp(866,44): warning C4244: 'argument': conversion from 'GLdouble' to 'GLfloat', possible loss of data
+C:\Users\Alden\Desktop\CPS511\Assignment 2\cps511A2\surfaceModeller.cpp(866,33): warning C4244: 'argument': conversion from 'GLdouble' to 'GLfloat', possible loss of data
+C:\Users\Alden\Desktop\CPS511\Assignment 2\cps511A2\surfaceModeller.cpp(866,22): warning C4244: 'argument': conversion from 'GLdouble' to 'GLfloat', possible loss of data
+C:\Users\Alden\Desktop\CPS511\Assignment 2\cps511A2\surfaceModeller.cpp(902,39): warning C4244: 'return': conversion from 'GLdouble' to 'float', possible loss of data
+  CPS511_Assignment2.vcxproj -> C:\Users\Alden\Desktop\CPS511\Assignment 2\cps511A2\x64\Debug\CPS511_Assignment2.exe
+          1 file(s) copied.

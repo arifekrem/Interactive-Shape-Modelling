@@ -100,7 +100,7 @@
       <AdditionalDependencies>freeglut.lib;glew32s.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy $(SolutionDir)Dependencies\freeglut\bin\$(Platform)\freeglut.dll $(OutDir)</Command>
+      <Command>copy "$(SolutionDir)Dependencies\freeglut\bin\x64\freeglut.dll" "C:\Users\Alden\Desktop\CPS511\Assignment 2\cps511A2\x64\Debug\"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -121,7 +121,7 @@
       <AdditionalDependencies>freeglut.lib;glew32s.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy $(SolutionDir)Dependencies\freeglut\bin\$(Platform)\freeglut.dll $(OutDir)</Command>
+      <Command>copy "$(SolutionDir)Dependencies\freeglut\bin\x64\freeglut.dll" "C:\Users\Alden\Desktop\CPS511\Assignment 2\cps511A2\x64\Debug\"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -138,7 +138,7 @@
       <AdditionalDependencies>freeglut.lib;glew32s.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy $(SolutionDir)Dependencies\freeglut\bin\$(Platform)\freeglut.dll $(OutDir)</Command>
+      <Command>copy "$(SolutionDir)Dependencies\freeglut\bin\x64\freeglut.dll" "C:\Users\Alden\Desktop\CPS511\Assignment 2\cps511A2\x64\Debug\"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -159,7 +159,7 @@
       <AdditionalDependencies>freeglut.lib;glew32s.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy $(SolutionDir)Dependencies\freeglut\bin\$(Platform)\freeglut.dll $(OutDir)</Command>
+      <Command>copy "$(SolutionDir)Dependencies\freeglut\bin\x64\freeglut.dll" "C:\Users\Alden\Desktop\CPS511\Assignment 2\cps511A2\x64\Debug\"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
