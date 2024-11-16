@@ -34,17 +34,17 @@ GLdouble aspect = (GLdouble)window3DSizeX / window3DSizeY;
 
 int main(int argc, char* argv[])
 {
-	glutInit(&argc, (char**)argv);
-	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
-	glutInitWindowSize(glutWindowWidth, glutWindowHeight);
-	glutInitWindowPosition(50, 100);
-
+	glutInit(&argc, (char **)argv); 
+	glutInitDisplayMode (GLUT_DOUBLE | GLUT_RGB);
+	glutInitWindowSize(glutWindowWidth,glutWindowHeight);
+	glutInitWindowPosition(50,100);  
+	
 	// The 2D Window
-	window2D = glutCreateWindow("Profile Curve");
+	window2D = glutCreateWindow("Profile Curve"); 
 	glutDisplayFunc(display2D);
 	glutReshapeFunc(reshape2D);
 	// Initialize the 2D profile curve system
-	init2DCurveWindow();
+	init2DCurveWindow(); 
 	// A few input handlers
 	glutMouseFunc(mouseButtonHandler2D);
 	glutMotionFunc(mouseMotionHandler2D);
@@ -52,10 +52,10 @@ int main(int argc, char* argv[])
 	glutMouseWheelFunc(mouseScrollWheelHandler2D);
 	glutSpecialFunc(specialKeyHandler2D);
 	glutKeyboardFunc(keyboardHandler2D);
-
+	
 	// The 3D Window
-	window3D = glutCreateWindow("Surface of Revolution");
-	glutPositionWindow(900, 100);
+	window3D = glutCreateWindow("Surface of Revolution"); 
+	glutPositionWindow(900,100);  
 	glutDisplayFunc(display3D);
 	glutReshapeFunc(reshape3D);
 	glutMouseFunc(mouseButtonHandler3D);
@@ -66,7 +66,7 @@ int main(int argc, char* argv[])
 	init3DSurfaceWindow();
 
 	// Annnd... ACTION!!
-	glutMainLoop();
+	glutMainLoop(); 
 
 	return 0;
 }
@@ -79,7 +79,7 @@ int main(int argc, char* argv[])
  * Fill in the code in the empty functions
  ************************************************************************************/
 
- // The profile curve is a subdivision curve
+// The profile curve is a subdivision curve
 SubdivisionCurve subcurve;
 
 int hoveredCtlPt = -1;
@@ -91,8 +91,8 @@ int numCirclePoints = 30;
 double circleRadius = 0.2;
 
 
-void init2DCurveWindow()
-{
+void init2DCurveWindow() 
+{ 
 	glLineWidth(3.0);
 	glEnable(GL_LINE_SMOOTH);
 	glEnable(GL_BLEND);
@@ -101,22 +101,22 @@ void init2DCurveWindow()
 	glClearColor(0.4F, 0.4F, 0.4F, 0.0F);
 	initSubdivisionCurve();
 	initControlPointCircles();
-}
+} 
 
 void display2D()
 {
 	glClear(GL_COLOR_BUFFER_BIT);
-	glMatrixMode(GL_PROJECTION);
+	glMatrixMode(GL_PROJECTION);	
 	glLoadIdentity();
 	gluOrtho2D(wvLeft, wvRight, wvBottom, wvTop);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	draw2DScene();
+	draw2DScene();	
 	glutSwapBuffers();
 }
 
 
-void draw2DScene()
+void draw2DScene() 
 {
 	drawAxes();
 	drawSubdivisionCurve();
@@ -138,14 +138,14 @@ void drawAxes()
 	glPopMatrix();
 }
 
-void drawSubdivisionCurve()
+void drawSubdivisionCurve() 
 {
 	// Subdivide the given curve
 	computeSubdivisionCurve(&subcurve);
 	glColor3f(0.0, 1.0, 0.0);
 	glPushMatrix();
 	glBegin(GL_LINE_STRIP);
-	for (int i = 0; i < subcurve.numCurvePoints; i++)
+	for (int i=0; i<subcurve.numCurvePoints; i++)
 	{
 		glVertex3f(subcurve.curvePoints[i].x, subcurve.curvePoints[i].y, 0.0);
 	}
@@ -156,26 +156,26 @@ void drawSubdivisionCurve()
 void drawControlPoints()
 {
 	int i, j;
-	for (i = 0; i < subcurve.numControlPoints; i++) {
+	for (i=0; i<subcurve.numControlPoints; i++){
 		glPushMatrix();
-		glColor3f(1.0f, 0.0f, 0.0f);
+		glColor3f(1.0f,0.0f,0.0f); 
 		glTranslatef(circles[i].circleCenter.x, circles[i].circleCenter.y, 0);
 		// for the hoveredCtlPt, draw an outline and change its color
 		if (i == hoveredCtlPt)
-		{
+		{ 
 			// outline
 			glColor3f(0.0, 1.0, 0.0);
-			glBegin(GL_LINE_LOOP);
-			for (j = 0; j < numCirclePoints; j++) {
-				glVertex3f(circles[i].circlePoints[j].x, circles[i].circlePoints[j].y, 0);
+			glBegin(GL_LINE_LOOP); 
+			for(j=0; j < numCirclePoints; j++) {
+				glVertex3f(circles[i].circlePoints[j].x, circles[i].circlePoints[j].y, 0); 
 			}
 			glEnd();
 			// color change
-			glColor3f(0.5, 0.0, 1.0);
+			glColor3f(0.5,0.0,1.0);
 		}
-		glBegin(GL_LINE_LOOP);
-		for (j = 0; j < numCirclePoints; j++) {
-			glVertex3f(circles[i].circlePoints[j].x, circles[i].circlePoints[j].y, 0);
+		glBegin(GL_LINE_LOOP); 
+		for(j=0; j < numCirclePoints; j++) {
+			glVertex3f(circles[i].circlePoints[j].x, circles[i].circlePoints[j].y, 0); 
 		}
 		glEnd();
 		glPopMatrix();
@@ -187,23 +187,23 @@ void initSubdivisionCurve() {
 
 	GLdouble x, y;
 
-	x = 2 * cos(M_PI * 0.5);
-	y = 2 * sin(M_PI * 0.5);
+	x = 2 * cos(M_PI*0.5);
+	y = 2 * sin(M_PI*0.5);
 	subcurve.controlPoints[0].x = x;
 	subcurve.controlPoints[0].y = y;
 
-	x = 2 * cos(M_PI * 0.25);
-	y = 2 * sin(M_PI * 0.25);
+	x = 2 * cos(M_PI*0.25);
+	y = 2 * sin(M_PI*0.25);
 	subcurve.controlPoints[1].x = x;
 	subcurve.controlPoints[1].y = y;
 
-	x = 2 * cos(M_PI * 0.0);
-	y = 2 * sin(M_PI * 0.0);
+	x = 2 * cos(M_PI*0.0);
+	y = 2 * sin(M_PI*0.0);
 	subcurve.controlPoints[2].x = x;
 	subcurve.controlPoints[2].y = y;
 
-	x = 2 * cos(-M_PI * 0.25);
-	y = 2 * sin(-M_PI * 0.25);
+	x = 2 * cos(-M_PI*0.25);
+	y = 2 * sin(-M_PI*0.25);
 	subcurve.controlPoints[3].x = x;
 	subcurve.controlPoints[3].y = y;
 
@@ -219,35 +219,35 @@ void initSubdivisionCurve() {
 void initControlPointCircles()
 {
 	int num = subcurve.numControlPoints;
-	for (int i = 0; i < num; i++) {
+	for (int i=0; i < num; i++){
 		constructCircle(circleRadius, numCirclePoints, circles[i].circlePoints);
 		circles[i].circleCenter = subcurve.controlPoints[i];
 	}
 }
 
-void screenToWorldCoordinates(int xScreen, int yScreen, GLdouble* xw, GLdouble* yw)
+void screenToWorldCoordinates(int xScreen, int yScreen, GLdouble *xw, GLdouble *yw)
 {
 	GLdouble xView, yView;
 	screenToCameraCoordinates(xScreen, yScreen, &xView, &yView);
 	cameraToWorldCoordinates(xView, yView, xw, yw);
 }
 
-void screenToCameraCoordinates(int xScreen, int yScreen, GLdouble* xCamera, GLdouble* yCamera)
+void screenToCameraCoordinates(int xScreen, int yScreen, GLdouble *xCamera, GLdouble *yCamera)
 {
-	*xCamera = ((wvRight - wvLeft) / glutWindowWidth) * xScreen;
-	*yCamera = ((wvTop - wvBottom) / glutWindowHeight) * (glutWindowHeight - yScreen);
+	*xCamera = ((wvRight-wvLeft)/glutWindowWidth)  * xScreen; 
+	*yCamera = ((wvTop-wvBottom)/glutWindowHeight) * (glutWindowHeight-yScreen); 
 }
 
-void cameraToWorldCoordinates(GLdouble xcam, GLdouble ycam, GLdouble* xw, GLdouble* yw)
+void cameraToWorldCoordinates(GLdouble xcam, GLdouble ycam, GLdouble *xw, GLdouble *yw)
 {
 	*xw = xcam + wvLeft;
 	*yw = ycam + wvBottom;
 }
 
-void worldToCameraCoordiantes(GLdouble xWorld, GLdouble yWorld, GLdouble* xcam, GLdouble* ycam)
+void worldToCameraCoordiantes(GLdouble xWorld, GLdouble yWorld, GLdouble *xcam, GLdouble *ycam)
 {
-	double wvCenterX = wvLeft + (wvRight - wvLeft) / 2.0;
-	double wvCenterY = wvBottom + (wvTop - wvBottom) / 2.0;
+	double wvCenterX = wvLeft   + (wvRight - wvLeft)/2.0;
+	double wvCenterY = wvBottom + (wvTop   - wvBottom)/2.0;
 	*xcam = worldCenterX - wvCenterX + xWorld;
 	*ycam = worldCenterY - wvCenterY + yWorld;
 }
@@ -257,16 +257,16 @@ int currentButton;
 void mouseButtonHandler2D(int button, int state, int xMouse, int yMouse)
 {
 	int i;
-
+	
 	currentButton = button;
 	if (button == GLUT_LEFT_BUTTON)
-	{
-		switch (state) {
+	{  
+		switch (state) {      
 		case GLUT_DOWN:
 			if (hoveredCtlPt > -1)
 			{
-				screenToWorldCoordinates(xMouse, yMouse, &circles[hoveredCtlPt].circleCenter.x, &circles[hoveredCtlPt].circleCenter.y);
-				screenToWorldCoordinates(xMouse, yMouse, &subcurve.controlPoints[hoveredCtlPt].x, &subcurve.controlPoints[hoveredCtlPt].y);
+			  screenToWorldCoordinates(xMouse, yMouse, &circles[hoveredCtlPt].circleCenter.x, &circles[hoveredCtlPt].circleCenter.y);
+			  screenToWorldCoordinates(xMouse, yMouse, &subcurve.controlPoints[hoveredCtlPt].x, &subcurve.controlPoints[hoveredCtlPt].y);
 			}
 			break;
 		case GLUT_UP:
@@ -274,35 +274,35 @@ void mouseButtonHandler2D(int button, int state, int xMouse, int yMouse)
 			glutPostRedisplay();
 			break;
 		}
-	}
+	}    
 	else if (button == GLUT_MIDDLE_BUTTON)
 	{
-		switch (state) {
+		switch (state) {      
 		case GLUT_DOWN:
 			break;
 		case GLUT_UP:
 			if (hoveredCtlPt == -1 && subcurve.numControlPoints < MAXCONTROLPOINTS)
-			{
+			{ 
 				GLdouble newPointX;
 				GLdouble newPointY;
 				screenToWorldCoordinates(xMouse, yMouse, &newPointX, &newPointY);
 				subcurve.controlPoints[subcurve.numControlPoints].x = newPointX;
-				subcurve.controlPoints[subcurve.numControlPoints].y = newPointY;
+				subcurve.controlPoints[subcurve.numControlPoints].y = newPointY;			
 				constructCircle(circleRadius, numCirclePoints, circles[subcurve.numControlPoints].circlePoints);
 				circles[subcurve.numControlPoints].circleCenter = subcurve.controlPoints[subcurve.numControlPoints];
 				subcurve.numControlPoints++;
-			}
-			else if (hoveredCtlPt > -1 && subcurve.numControlPoints > MINCONTROLPOINTS)
+			} 
+			else if (hoveredCtlPt > -1 && subcurve.numControlPoints > MINCONTROLPOINTS) 
 			{
 				subcurve.numControlPoints--;
-				for (i = hoveredCtlPt; i < subcurve.numControlPoints; i++)
+				for (i=hoveredCtlPt; i<subcurve.numControlPoints; i++)
 				{
-					subcurve.controlPoints[i].x = subcurve.controlPoints[i + 1].x;
-					subcurve.controlPoints[i].y = subcurve.controlPoints[i + 1].y;
-					circles[i].circleCenter = circles[i + 1].circleCenter;
+					subcurve.controlPoints[i].x = subcurve.controlPoints[i+1].x;
+					subcurve.controlPoints[i].y = subcurve.controlPoints[i+1].y;
+					circles[i].circleCenter = circles[i+1].circleCenter;
 				}
 			}
-
+			
 			glutSetWindow(window3D);
 			glutPostRedisplay();
 			break;
@@ -315,14 +315,14 @@ void mouseButtonHandler2D(int button, int state, int xMouse, int yMouse)
 
 void mouseMotionHandler2D(int xMouse, int yMouse)
 {
-	if (currentButton == GLUT_LEFT_BUTTON) {
-		if (hoveredCtlPt > -1)
+	if (currentButton == GLUT_LEFT_BUTTON) {  
+		if (hoveredCtlPt > -1) 
 		{
 			screenToWorldCoordinates(xMouse, yMouse, &circles[hoveredCtlPt].circleCenter.x, &circles[hoveredCtlPt].circleCenter.y);
 			screenToWorldCoordinates(xMouse, yMouse, &subcurve.controlPoints[hoveredCtlPt].x, &subcurve.controlPoints[hoveredCtlPt].y);
-
+			
 		}
-	}
+	}    
 	glutPostRedisplay();
 	glutSetWindow(window3D);
 	glutPostRedisplay();
@@ -335,12 +335,12 @@ void mouseHoverHandler2D(int xMouse, int yMouse)
 	GLdouble worldMouseX, worldMouseY;
 	screenToWorldCoordinates(xMouse, yMouse, &worldMouseX, &worldMouseY);
 	// See if we're hovering over a circle
-	for (int i = 0; i < subcurve.numControlPoints; i++) {
+	for (int i=0; i<subcurve.numControlPoints; i++){
 		GLdouble distToX = worldMouseX - circles[i].circleCenter.x;
 		GLdouble distToY = worldMouseY - circles[i].circleCenter.y;
-		GLdouble euclideanDist = sqrt(distToX * distToX + distToY * distToY);
+		GLdouble euclideanDist = sqrt(distToX*distToX + distToY*distToY);
 		if (euclideanDist < 0.5)
-			hoveredCtlPt = i;
+		  hoveredCtlPt = i;
 	}
 	glutPostRedisplay();
 }
@@ -354,18 +354,17 @@ void mouseScrollWheelHandler2D(int button, int dir, int xMouse, int yMouse)
 	GLdouble anchorPointX, anchorPointY;
 	double clipWindowWidth;
 	double clipWindowHeight;
-	double wvCenterX = wvLeft + (wvRight - wvLeft) / 2.0;
-	double wvCenterY = wvBottom + (wvTop - wvBottom) / 2.0;
-	double wvWidth = wvRight - wvLeft;
-	double wvHeight = wvTop - wvBottom;
-
+	double wvCenterX = wvLeft   + (wvRight - wvLeft)/2.0;
+	double wvCenterY = wvBottom + (wvTop   - wvBottom)/2.0;
+	double wvWidth   = wvRight - wvLeft;
+	double wvHeight  = wvTop   - wvBottom;
+	
 	worldToCameraCoordiantes(worldCenterX, worldCenterY, &cameraOnCenterX, &cameraOnCenterY);
-	if (wvWidth >= (worldRight - worldLeft) * 1.2)
+	if (wvWidth >= (worldRight-worldLeft)*1.2)
 	{
 		anchorPointX = cameraOnCenterX;
 		anchorPointY = cameraOnCenterY;
-	}
-	else
+	} else 
 	{
 		// else, anchor the zoom to the mouse
 		screenToWorldCoordinates(xMouse, yMouse, &anchorPointX, &anchorPointY);
@@ -375,35 +374,35 @@ void mouseScrollWheelHandler2D(int button, int dir, int xMouse, int yMouse)
 
 	// Set up maximum shift
 	GLdouble maxPosShift = 50;
-	GLdouble maxNegShift = -50;
-	anchorToCenterX = (anchorToCenterX > maxPosShift) ? maxPosShift : anchorToCenterX;
-	anchorToCenterX = (anchorToCenterX < maxNegShift) ? maxNegShift : anchorToCenterX;
-	anchorToCenterY = (anchorToCenterY > maxPosShift) ? maxPosShift : anchorToCenterY;
-	anchorToCenterY = (anchorToCenterY < maxNegShift) ? maxNegShift : anchorToCenterY;
+	GLdouble maxNegShift = -50;	
+	anchorToCenterX = (anchorToCenterX > maxPosShift)? maxPosShift : anchorToCenterX;
+	anchorToCenterX = (anchorToCenterX < maxNegShift)? maxNegShift : anchorToCenterX;
+	anchorToCenterY = (anchorToCenterY > maxPosShift)? maxPosShift : anchorToCenterY;
+	anchorToCenterY = (anchorToCenterY < maxNegShift)? maxNegShift : anchorToCenterY;
 
 	// Move the world centre closer to this point.
-	wvCenterX += anchorToCenterX / 4;
-	wvCenterY += anchorToCenterY / 4;
-
-	if (dir > 0)
+	wvCenterX += anchorToCenterX/4;
+	wvCenterY += anchorToCenterY/4;
+	
+	if (dir > 0) 
 	{
 		// Zoom in to mouse point
-		clipWindowWidth = wvWidth * 0.8;
-		clipWindowHeight = wvHeight * 0.8;
-		wvRight = wvCenterX + clipWindowWidth / 2.0;
-		wvTop = wvCenterY + clipWindowHeight / 2.0;
-		wvLeft = wvCenterX - clipWindowWidth / 2.0;
-		wvBottom = wvCenterY - clipWindowHeight / 2.0;
+		clipWindowWidth = wvWidth*0.8;
+		clipWindowHeight= wvHeight*0.8;
+		wvRight =  wvCenterX + clipWindowWidth/2.0;
+		wvTop   =  wvCenterY + clipWindowHeight/2.0;
+		wvLeft  =  wvCenterX - clipWindowWidth/2.0;
+		wvBottom=  wvCenterY - clipWindowHeight/2.0;
 	}
-	else
+	else 
 	{
 		// Zoom out
-		clipWindowWidth = wvWidth * 1.25;
-		clipWindowHeight = wvHeight * 1.25;
-		wvRight = wvCenterX + clipWindowWidth / 2.0;
-		wvTop = wvCenterY + clipWindowHeight / 2.0;
-		wvLeft = wvCenterX - clipWindowWidth / 2.0;
-		wvBottom = wvCenterY - clipWindowHeight / 2.0;
+		clipWindowWidth = wvWidth*1.25;
+		clipWindowHeight= wvHeight*1.25;
+		wvRight =  wvCenterX + clipWindowWidth/2.0;
+		wvTop   =  wvCenterY + clipWindowHeight/2.0;
+		wvLeft  =  wvCenterX - clipWindowWidth/2.0;
+		wvBottom=  wvCenterY - clipWindowHeight/2.0;
 	}
 	glutPostRedisplay();
 }
@@ -411,15 +410,15 @@ void mouseScrollWheelHandler2D(int button, int dir, int xMouse, int yMouse)
 void keyboardHandler2D(unsigned char key, int x, int y)
 {
 	int i;
-
+	
 	double clipWindowWidth;
 	double clipWindowHeight;
-	double wvCenterX = wvLeft + (wvRight - wvLeft) / 2.0;
-	double wvCenterY = wvBottom + (wvTop - wvBottom) / 2.0;
-	double wvWidth = wvRight - wvLeft;
-	double wvHeight = wvTop - wvBottom;
+	double wvCenterX = wvLeft   + (wvRight - wvLeft)/2.0;
+	double wvCenterY = wvBottom + (wvTop   - wvBottom)/2.0;
+	double wvWidth   = wvRight - wvLeft;
+	double wvHeight  = wvTop   - wvBottom;
 
-	switch (key)
+	switch(key)
 	{
 	case 'q':
 	case 'Q':
@@ -429,23 +428,23 @@ void keyboardHandler2D(unsigned char key, int x, int y)
 		break;
 	case 107:
 	case '+':
-		clipWindowWidth = wvWidth * 0.8;
-		clipWindowHeight = wvHeight * 0.8;
-		wvRight = wvCenterX + clipWindowWidth / 2.0;
-		wvTop = wvCenterY + clipWindowHeight / 2.0;
-		wvLeft = wvCenterX - clipWindowWidth / 2.0;
-		wvBottom = wvCenterY - clipWindowHeight / 2.0;
+		clipWindowWidth = wvWidth*0.8;
+		clipWindowHeight= wvHeight*0.8;
+		wvRight =  wvCenterX + clipWindowWidth/2.0;
+		wvTop   =  wvCenterY + clipWindowHeight/2.0;
+		wvLeft  =  wvCenterX - clipWindowWidth/2.0;
+		wvBottom=  wvCenterY - clipWindowHeight/2.0;
 		break;
 	case 109:
 	case '-':
-		clipWindowWidth = wvWidth * 1.25;
-		clipWindowHeight = wvHeight * 1.25;
-		wvRight = wvCenterX + clipWindowWidth / 2.0;
-		wvTop = wvCenterY + clipWindowHeight / 2.0;
-		wvLeft = wvCenterX - clipWindowWidth / 2.0;
-		wvBottom = wvCenterY - clipWindowHeight / 2.0;
+		clipWindowWidth = wvWidth*1.25;
+		clipWindowHeight= wvHeight*1.25;
+		wvRight =  wvCenterX + clipWindowWidth/2.0;
+		wvTop   =  wvCenterY + clipWindowHeight/2.0;
+		wvLeft  =  wvCenterX - clipWindowWidth/2.0;
+		wvBottom=  wvCenterY - clipWindowHeight/2.0;
 		break;
-
+	
 	default:
 		break;
 	}
@@ -456,45 +455,45 @@ void specialKeyHandler2D(int key, int x, int y)
 {
 	double clipWindowWidth;
 	double clipWindowHeight;
-	double wvCenterX = wvLeft + (wvRight - wvLeft) / 2.0;
-	double wvCenterY = wvBottom + (wvTop - wvBottom) / 2.0;
-	double wvWidth = wvRight - wvLeft;
-	double wvHeight = wvTop - wvBottom;
+	double wvCenterX = wvLeft   + (wvRight - wvLeft)/2.0;
+	double wvCenterY = wvBottom + (wvTop   - wvBottom)/2.0;
+	double wvWidth   = wvRight - wvLeft;
+	double wvHeight  = wvTop   - wvBottom;
 
-	switch (key)
+	switch(key)	
 	{
 	case GLUT_KEY_LEFT:
 		wvLeft -= 5.0;
-		wvRight -= 5.0;
+		wvRight-= 5.0;
 		break;
 	case GLUT_KEY_RIGHT:
 		wvLeft += 5.0;
-		wvRight += 5.0;
+		wvRight+= 5.0;
 		break;
 	case GLUT_KEY_UP:
-		wvTop += 5.0;
-		wvBottom += 5.0;
+		wvTop   += 5.0;
+		wvBottom+= 5.0;
 		break;
 	case GLUT_KEY_DOWN:
-		wvTop -= 5.0;
-		wvBottom -= 5.0;
+		wvTop   -= 5.0;
+		wvBottom-= 5.0;
 		break;
 		// Want to zoom in/out and keep  aspect ratio = 2.0
 	case GLUT_KEY_F1:
-		clipWindowWidth = wvWidth * 0.8;
-		clipWindowHeight = wvHeight * 0.8;
-		wvRight = wvCenterX + clipWindowWidth / 2.0;
-		wvTop = wvCenterY + clipWindowHeight / 2.0;
-		wvLeft = wvCenterX - clipWindowWidth / 2.0;
-		wvBottom = wvCenterY - clipWindowHeight / 2.0;
+		clipWindowWidth = wvWidth*0.8;
+		clipWindowHeight= wvHeight*0.8;
+		wvRight =  wvCenterX + clipWindowWidth/2.0;
+		wvTop   =  wvCenterY + clipWindowHeight/2.0;
+		wvLeft  =  wvCenterX - clipWindowWidth/2.0;
+		wvBottom=  wvCenterY - clipWindowHeight/2.0;
 		break;
 	case GLUT_KEY_F2:
-		clipWindowWidth = wvWidth * 1.25;
-		clipWindowHeight = wvHeight * 1.25;
-		wvRight = wvCenterX + clipWindowWidth / 2.0;
-		wvTop = wvCenterY + clipWindowHeight / 2.0;
-		wvLeft = wvCenterX - clipWindowWidth / 2.0;
-		wvBottom = wvCenterY - clipWindowHeight / 2.0;
+		clipWindowWidth = wvWidth*1.25;
+		clipWindowHeight= wvHeight*1.25;
+		wvRight =  wvCenterX + clipWindowWidth/2.0;
+		wvTop   =  wvCenterY + clipWindowHeight/2.0;
+		wvLeft  =  wvCenterX - clipWindowWidth/2.0;
+		wvBottom=  wvCenterY - clipWindowHeight/2.0;
 		break;
 	}
 	glutPostRedisplay();
@@ -503,8 +502,8 @@ void specialKeyHandler2D(int key, int x, int y)
 
 void reshape2D(int w, int h)
 {
-	glutWindowWidth = (GLsizei)w;
-	glutWindowHeight = (GLsizei)h;
+	glutWindowWidth = (GLsizei) w;
+	glutWindowHeight = (GLsizei) h;
 	glViewport(0, 0, glutWindowWidth, glutWindowHeight);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
@@ -518,7 +517,7 @@ void reshape2D(int w, int h)
 /************************************************************************************
  *
  *
- * 3D Window and Surface of Revolution Code
+ * 3D Window and Surface of Revolution Code 
  *
  * Fill in the code in the empty functions
  ************************************************************************************/
@@ -563,13 +562,13 @@ typedef struct Quad
 } Quad;
 
 // Quads
-Quad* qarray;
+Quad *qarray;
 boolean quadArrayAllocated = false;
 
 // Vertices 
 #define NUMBEROFSIDES 16 // You may want to lower this to 4 or 5 when debugging
 
-Vertex* varray; // 
+Vertex *varray; // 
 boolean varrayAllocated = false;
 
 GLdouble fov = 60.0;
@@ -621,12 +620,12 @@ void init3DSurfaceWindow()
 
 void reshape3D(int w, int h)
 {
-	glutWindowWidth = (GLsizei)w;
-	glutWindowHeight = (GLsizei)h;
+	glutWindowWidth = (GLsizei) w;
+	glutWindowHeight = (GLsizei) h;
 	glViewport(0, 0, glutWindowWidth, glutWindowHeight);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(fov, aspect, zNear, zFar);
+	gluPerspective(fov,aspect,zNear,zFar);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	gluLookAt(eyeX, eyeY, eyeZ, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
@@ -642,12 +641,12 @@ void display3D()
 
 	drawGround();
 
-	// Build and Draw Surface of Revolution (Quad Mesh)
+    // Build and Draw Surface of Revolution (Quad Mesh)
 	buildVertexArray();
 	buildQuadArray();
 	computeQuadNormals();
 	computeVertexNormals();
-
+	
 	// Draw quad mesh
 	glPushMatrix();
 	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, quadMat_ambient);
@@ -656,17 +655,17 @@ void display3D()
 	glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, quadMat_shininess);
 
 	if (drawAsLines)
-		drawQuadsAsLines();
+	  drawQuadsAsLines();
 	else if (drawAsPoints)
 		drawQuadsAsPoints();
 	else
-		drawQuads();
+	  drawQuads();
 
 	glPopMatrix();
 	glutSwapBuffers();
 }
 
-void drawGround()
+void drawGround() 
 {
 	glPushMatrix();
 	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, groundMat_ambient);
@@ -689,12 +688,12 @@ void buildVertexArray()
 	int row, col;
 	double newX, newZ;
 	GLdouble cumulativeTheta = 0;
-	GLdouble theta = 360 / (GLdouble)NUMBEROFSIDES; // = 18
+	GLdouble theta = 360/(GLdouble)NUMBEROFSIDES; // = 18
 
 	// Allocate memeory for the vertex array - needs to be done only once
 	if (!varrayAllocated)
 	{
-		varray = (Vertex*)malloc(subcurve.numCurvePoints * NUMBEROFSIDES * sizeof(Vertex));
+		varray = (Vertex *)malloc(subcurve.numCurvePoints* NUMBEROFSIDES * sizeof(Vertex));
 		varrayAllocated = true;
 	}
 	/*  -------------
@@ -706,37 +705,37 @@ void buildVertexArray()
 		-------------
 		|  |  |  |  |
 		-------------
-	*/
-	for (row = 0; row < subcurve.numCurvePoints; row++)
+	*/		
+	for (row = 0; row < subcurve.numCurvePoints; row++) 
 	{
-		for (col = 0; col < NUMBEROFSIDES; col++)
+		for (col = 0; col < NUMBEROFSIDES; col++) 
 		{
 			Vector3D newVector = rotateAroundY(subcurve.curvePoints[row].x, 0, cumulativeTheta);
-			varray[row * NUMBEROFSIDES + col].numQuads = 0;
-			varray[row * NUMBEROFSIDES + col].y = subcurve.curvePoints[row].y;
-			varray[row * NUMBEROFSIDES + col].x = newVector.x;
-			varray[row * NUMBEROFSIDES + col].z = newVector.z;
+			varray[row*NUMBEROFSIDES + col].numQuads = 0;
+			varray[row*NUMBEROFSIDES + col].y = subcurve.curvePoints[row].y;
+			varray[row*NUMBEROFSIDES + col].x = newVector.x;
+			varray[row*NUMBEROFSIDES + col].z = newVector.z;	
 			cumulativeTheta += theta;
 		}
 	}
 }
 
 Vector3D rotateAroundY(double x, double z, double theta)
-{
+{	
 	Vector3D newVector;
-
-	newVector.x = cos(theta / 180 * M_PI) * x + sin(theta / 180.0 * M_PI) * z;
-	newVector.z = -sin(theta / 180 * M_PI) * x + cos(theta / 180.0 * M_PI) * z;
+	
+	newVector.x =  cos(theta/180*M_PI) * x + sin(theta/180.0*M_PI) * z;
+	newVector.z = -sin(theta/180*M_PI) * x + cos(theta/180.0*M_PI) * z;
 	return newVector;
 }
 
 void buildQuadArray()
 {
 	int col, row, numQuads;
-
+	
 	if (!quadArrayAllocated)
 	{
-		qarray = (Quad*)malloc(sizeof(Quad) * (subcurve.numCurvePoints - 1) * NUMBEROFSIDES);
+		qarray = (Quad *)malloc(sizeof(Quad)*(subcurve.numCurvePoints-1)*NUMBEROFSIDES);
 	}
 	/*  -------------
 		|  |  |  |  |
@@ -748,7 +747,7 @@ void buildQuadArray()
 		|  |  |  |  |
 		-------------
 	*/
-	for (row = 0; row < subcurve.numCurvePoints - 1; row++)
+	for (row = 0; row < subcurve.numCurvePoints-1; row++)
 	{
 		for (col = 0; col < NUMBEROFSIDES; col++)
 		{
@@ -760,30 +759,30 @@ void buildQuadArray()
 			else
 				nextCol = col + 1;
 
-			qarray[row * NUMBEROFSIDES + col].vertexIndex[0] = row * NUMBEROFSIDES + col;
-			numQuads = varray[row * NUMBEROFSIDES + col].numQuads;
-			varray[row * NUMBEROFSIDES + col].quadIndex[numQuads] = row * NUMBEROFSIDES + col;
-			varray[row * NUMBEROFSIDES + col].numQuads++;
+			qarray[row*NUMBEROFSIDES + col].vertexIndex[0] = row * NUMBEROFSIDES + col;
+			numQuads = varray[row*NUMBEROFSIDES + col].numQuads;
+			varray[row*NUMBEROFSIDES + col].quadIndex[numQuads] = row * NUMBEROFSIDES + col;
+			varray[row*NUMBEROFSIDES + col].numQuads++;
 
-			qarray[row * NUMBEROFSIDES + col].vertexIndex[1] = (row + 1) * NUMBEROFSIDES + col;
-			numQuads = varray[(row + 1) * NUMBEROFSIDES + col].numQuads;
-			varray[(row + 1) * NUMBEROFSIDES + col].quadIndex[numQuads] = row * NUMBEROFSIDES + col;
-			varray[(row + 1) * NUMBEROFSIDES + col].numQuads++;
+			qarray[row*NUMBEROFSIDES + col].vertexIndex[1] = (row+1) * NUMBEROFSIDES + col;
+			numQuads = varray[(row+1)*NUMBEROFSIDES + col].numQuads;
+			varray[(row+1)*NUMBEROFSIDES + col].quadIndex[numQuads] = row * NUMBEROFSIDES + col;
+			varray[(row+1)*NUMBEROFSIDES + col].numQuads++;
 
-			qarray[row * NUMBEROFSIDES + col].vertexIndex[2] = (row + 1) * NUMBEROFSIDES + nextCol;
-			numQuads = varray[(row + 1) * NUMBEROFSIDES + nextCol].numQuads;
-			varray[(row + 1) * NUMBEROFSIDES + nextCol].quadIndex[numQuads] = row * NUMBEROFSIDES + col;
-			varray[(row + 1) * NUMBEROFSIDES + nextCol].numQuads++;
+			qarray[row*NUMBEROFSIDES + col].vertexIndex[2] = (row + 1) * NUMBEROFSIDES + nextCol;
+			numQuads = varray[(row + 1)*NUMBEROFSIDES + nextCol].numQuads;
+			varray[(row + 1)*NUMBEROFSIDES + nextCol].quadIndex[numQuads] = row * NUMBEROFSIDES + col;
+			varray[(row + 1)*NUMBEROFSIDES + nextCol].numQuads++;
 
-			qarray[row * NUMBEROFSIDES + col].vertexIndex[3] = row * NUMBEROFSIDES + nextCol;
-			numQuads = varray[row * NUMBEROFSIDES + nextCol].numQuads;
-			varray[row * NUMBEROFSIDES + nextCol].quadIndex[numQuads] = row * NUMBEROFSIDES + col;
-			varray[row * NUMBEROFSIDES + nextCol].numQuads++;
+			qarray[row*NUMBEROFSIDES + col].vertexIndex[3] = row * NUMBEROFSIDES + nextCol;
+			numQuads = varray[row*NUMBEROFSIDES + nextCol].numQuads;
+			varray[row*NUMBEROFSIDES + nextCol].quadIndex[numQuads] = row * NUMBEROFSIDES + col;
+			varray[row*NUMBEROFSIDES + nextCol].numQuads++;
 		}
 	}
 }
 
-void computeQuadNormals()
+void computeQuadNormals() 
 {
 	for (int row = 0; row < subcurve.numCurvePoints - 1; row++)
 	{
@@ -794,17 +793,17 @@ void computeQuadNormals()
 			double normal_z = 0.0;
 
 			int i, j;
-			Vertex* vi;
-			Vertex* vj;
+			Vertex *vi;
+			Vertex *vj;
 			Vector3D normal;
 			normal.x = normal.y = normal.z = 0;
 
-			for (i = 0, j = 1; i < 4; i++, j++)
+			for (i = 0, j = 1; i < 4; i++, j++) 
 			{
 				if (j == 4) j = 0;
-				vi = &varray[qarray[row * NUMBEROFSIDES + col].vertexIndex[i]];
-				vj = &varray[qarray[row * NUMBEROFSIDES + col].vertexIndex[j]];
-
+				vi = &varray[qarray[row*NUMBEROFSIDES + col].vertexIndex[i]];
+				vj = &varray[qarray[row*NUMBEROFSIDES + col].vertexIndex[j]];
+				
 				normal.x += (((vi->z) + (vj->z)) * ((vj->y) - (vi->y)));
 				normal.y += (((vi->x) + (vj->x)) * ((vj->z) - (vi->z)));
 				normal.z += (((vi->y) + (vj->y)) * ((vj->x) - (vi->x)));
@@ -814,12 +813,12 @@ void computeQuadNormals()
 			normal.y *= -1.0;
 			normal.z *= -1.0;
 			Vector3D normalized = normalize(normal);
-			qarray[row * NUMBEROFSIDES + col].normal = normalized;
+			qarray[row*NUMBEROFSIDES + col].normal = normalized;
 		}
 	}
 }
 
-void computeVertexNormals()
+void computeVertexNormals() 
 {
 	int col, row, i;
 	Vector3D vn;
@@ -828,24 +827,24 @@ void computeVertexNormals()
 	{
 		for (col = 0; col < NUMBEROFSIDES; col++)
 		{
-			int numQuads = varray[row * NUMBEROFSIDES + col].numQuads;
+			int numQuads = varray[row*NUMBEROFSIDES + col].numQuads;
 			vn.x = vn.y = vn.z = 0;
 
 			for (int i = 0; i < numQuads; i++)
 			{
-				int quadIndex = varray[row * NUMBEROFSIDES + col].quadIndex[i];
+				int quadIndex = varray[row*NUMBEROFSIDES + col].quadIndex[i];
 				vn.x += qarray[quadIndex].normal.x;
 				vn.y += qarray[quadIndex].normal.y;
 				vn.z += qarray[quadIndex].normal.z;
 			}
-			varray[row * NUMBEROFSIDES + col].normal = normalize(vn);
+			varray[row*NUMBEROFSIDES + col].normal = normalize(vn);
 		}
 	}
 }
 
 
 
-void drawQuads()
+void drawQuads() 
 {
 	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, quadMat_ambient);
 	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, quadMat_specular);
@@ -856,12 +855,12 @@ void drawQuads()
 	glPushMatrix();
 	for (int row = 0; row < subcurve.numCurvePoints - 1; row++)
 	{
-		for (int col = 0; col < NUMBEROFSIDES; col++)
+		for (int col = 0; col < NUMBEROFSIDES; col++) 
 		{
-			glBegin(GL_QUADS);
+			glBegin(GL_QUADS); 
 			for (int i = 0; i < 4; i++)
 			{
-				Vertex* vertex = &varray[qarray[row * NUMBEROFSIDES + col].vertexIndex[i]];
+				Vertex *vertex = &varray[qarray[row*NUMBEROFSIDES + col].vertexIndex[i]];
 				glNormal3f(vertex->normal.x, vertex->normal.y, vertex->normal.z);
 				glVertex3f(vertex->x, vertex->y, vertex->z);
 			}
@@ -872,13 +871,32 @@ void drawQuads()
 	glPopMatrix();
 }
 
-void drawQuadsAsPoints()
-{
-	// Fill in this code
+void drawQuadsAsPoints() {
+	// Enable point rendering
+	glPushMatrix();
+	glPointSize(5.0f); // Set the size of points for better visibility
+	glBegin(GL_POINTS);
+
+	// Loop through all vertices in the vertex array
+	for (int row = 0; row < subcurve.numCurvePoints; row++) {
+		for (int col = 0; col < NUMBEROFSIDES; col++) {
+			Vertex* vertex = &varray[row * NUMBEROFSIDES + col];
+
+			// Set the normal vector for lighting calculations
+			glNormal3f(vertex->normal.x, vertex->normal.y, vertex->normal.z);
+
+			// Specify the vertex position
+			glVertex3f(vertex->x, vertex->y, vertex->z);
+		}
+	}
+
+	glEnd();
+	glPopMatrix();
 }
-void drawQuadsAsLines()
+
+void drawQuadsAsLines() 
 {
-	// Fill in this code and draw mesh using lines
+ 	// Fill in this code and draw mesh using lines
 
 	// Fill in this code and draw normal vectors as well
 	if (drawNormals)
@@ -890,7 +908,7 @@ void drawQuadsAsLines()
 Vector3D crossProduct(Vector3D a, Vector3D b)
 {
 	Vector3D cross;
-
+	
 	cross.x = a.y * b.z - b.y * a.z;
 	cross.y = a.x * b.z - b.x * a.z;
 	cross.z = a.x * b.y - b.x * a.y;
@@ -899,15 +917,15 @@ Vector3D crossProduct(Vector3D a, Vector3D b)
 
 float DotProduct(Vector3D lhs, Vector3D rhs)
 {
-	return lhs.x * rhs.x + lhs.y * rhs.y + lhs.z * rhs.z;
+	return lhs.x*rhs.x + lhs.y*rhs.y + lhs.z*rhs.z;
 }
 
 Vector3D fourVectorAverage(Vector3D a, Vector3D b, Vector3D c, Vector3D d)
 {
 	Vector3D average;
-	average.x = (a.x + b.x + c.x + d.x) / 4.0;
-	average.y = (a.y + b.y + c.y + d.y) / 4.0;
-	average.z = (a.z + b.z + c.z + d.z) / 4.0;
+	average.x = (a.x + b.x + c.x + d.x)/4.0;
+	average.y = (a.y + b.y + c.y + d.y)/4.0;
+	average.z = (a.z + b.z + c.z + d.z)/4.0;
 	return average;
 }
 
@@ -915,9 +933,9 @@ Vector3D normalize(Vector3D a)
 {
 	GLdouble norm = sqrt(a.x * a.x + a.y * a.y + a.z * a.z);
 	Vector3D normalized;
-	normalized.x = a.x / norm;
-	normalized.y = a.y / norm;
-	normalized.z = a.z / norm;
+	normalized.x = a.x/norm;
+	normalized.y = a.y/norm;
+	normalized.z = a.z/norm;
 	return normalized;
 }
 
@@ -932,17 +950,17 @@ void mouseButtonHandler3D(int button, int state, int x, int y)
 	switch (button)
 	{
 	case GLUT_MIDDLE_BUTTON:
-		if (state == GLUT_DOWN)
+		if (state == GLUT_DOWN) 
 		{
-			// Fill in code for zooming or use scroll wheel
+           // Fill in code for zooming or use scroll wheel
 		}
-		break;
+	break;
 	default:
 		break;
 	}
 }
 
-void mouseScrollWheelHandler3D(int button, int dir, int xMouse, int yMouse)
+void mouseScrollWheelHandler3D(int button, int dir, int xMouse, int yMouse) 
 {
 	// Fill in this code for zooming in and out
 
@@ -954,13 +972,13 @@ void mouseMotionHandler3D(int x, int y)
 	int dy = y - lastMouseY;
 	if (currentButton == GLUT_LEFT_BUTTON)
 	{
-		// Fill in this code to control camera "orbiting" around surface
+      // Fill in this code to control camera "orbiting" around surface
 	}
-	if (currentButton == GLUT_RIGHT_BUTTON)
+	if (currentButton == GLUT_RIGHT_BUTTON) 
 	{
-		// Fill in this code to control camera elevation. Limit the elevation angle
+      // Fill in this code to control camera elevation. Limit the elevation angle
 	}
-	else if (currentButton == GLUT_MIDDLE_BUTTON)
+	else if (currentButton == GLUT_MIDDLE_BUTTON) 
 	{
 		// Fill in this code for zooming or ignore and use the scroll wheel
 	}
@@ -971,7 +989,7 @@ void mouseMotionHandler3D(int x, int y)
 
 void keyboardHandler3D(unsigned char key, int x, int y)
 {
-
+	
 	switch (key)
 	{
 	case 'q':
@@ -987,10 +1005,7 @@ void keyboardHandler3D(unsigned char key, int x, int y)
 			drawAsLines = true;
 		break;
 	case 'p':
-		if (drawAsPoints)
-			drawAsPoints = false;
-		else
-			drawAsPoints = true;
+		drawAsPoints = !drawAsPoints;
 		break;
 	case 'n':
 		if (drawNormals)
