@@ -872,20 +872,16 @@ void drawQuads()
 }
 
 void drawQuadsAsPoints() {
-	// Enable point rendering
 	glPushMatrix();
-	glPointSize(5.0f); // Set the size of points for better visibility
+	glPointSize(5.0f);  
 	glBegin(GL_POINTS);
 
-	// Loop through all vertices in the vertex array
 	for (int row = 0; row < subcurve.numCurvePoints; row++) {
 		for (int col = 0; col < NUMBEROFSIDES; col++) {
 			Vertex* vertex = &varray[row * NUMBEROFSIDES + col];
 
-			// Set the normal vector for lighting calculations
 			glNormal3f(vertex->normal.x, vertex->normal.y, vertex->normal.z);
 
-			// Specify the vertex position
 			glVertex3f(vertex->x, vertex->y, vertex->z);
 		}
 	}
@@ -894,13 +890,37 @@ void drawQuadsAsPoints() {
 	glPopMatrix();
 }
 
-void drawQuadsAsLines() 
-{
- 	// Fill in this code and draw mesh using lines
+void drawQuadsAsLines() {
+	// Iterate through all quads in the quad array
+	for (int row = 0; row < subcurve.numCurvePoints - 1; row++) {
+		for (int col = 0; col < NUMBEROFSIDES; col++) {
+			Quad* quad = &qarray[row * NUMBEROFSIDES + col];
 
-	// Fill in this code and draw normal vectors as well
-	if (drawNormals)
-	{
+			// Begin drawing lines
+			glBegin(GL_LINE_LOOP);
+			for (int i = 0; i < 4; i++) {
+				Vertex* vertex = &varray[quad->vertexIndex[i]];
+				glVertex3f(vertex->x, vertex->y, vertex->z);
+			}
+			glEnd();
+		}
+	}
+
+	// If drawNormals flag is enabled, draw the normals
+	if (drawNormals) {
+		glColor3f(1.0, 0.0, 0.0); // Set normal vector color to red
+		for (int row = 0; row < subcurve.numCurvePoints - 1; row++) {
+			for (int col = 0; col < NUMBEROFSIDES; col++) {
+				Vertex* vertex = &varray[row * NUMBEROFSIDES + col];
+				Vector3D normal = vertex->normal;
+
+				// Draw normal vectors as lines originating from the vertex
+				glBegin(GL_LINES);
+				glVertex3f(vertex->x, vertex->y, vertex->z);
+				glVertex3f(vertex->x + normal.x, vertex->y + normal.y, vertex->z + normal.z);
+				glEnd();
+			}
+		}
 	}
 }
 
@@ -999,10 +1019,7 @@ void keyboardHandler3D(unsigned char key, int x, int y)
 		exit(0);
 		break;
 	case 'l':
-		if (drawAsLines)
-			drawAsLines = false;
-		else
-			drawAsLines = true;
+		drawAsLines = !drawAsLines;
 		break;
 	case 'p':
 		drawAsPoints = !drawAsPoints;
