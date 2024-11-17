@@ -1025,7 +1025,7 @@ void mouseMotionHandler3D(int x, int y)
 
 	if (isElevating) {
 		cameraElevation += dy * rotationSpeed;
-		cameraElevation = std::clamp(cameraElevation, -elevationLimit, elevationLimit);
+		cameraElevation = std::clamp(cameraElevation, 0.0f, elevationLimit);
 	}
 
 	if (isZooming) {
