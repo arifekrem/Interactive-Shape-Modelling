@@ -3,7 +3,16 @@
   "WorkspaceRootPath": "C:\\Users\\Alden\\Desktop\\CPS511\\Assignment 2\\cps511A2\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Microsoft\\VC\\v170\\Microsoft.CppCommon.targets||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+      "AbsoluteMoniker": "D:0:0:{45FC9E9D-0287-4F4F-82FC-A29F2B8C7403}|CPS511_Assignment2.vcxproj|C:\\Users\\Alden\\Desktop\\CPS511\\Assignment 2\\cps511A2\\surfaceModeller.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{45FC9E9D-0287-4F4F-82FC-A29F2B8C7403}|CPS511_Assignment2.vcxproj|solutionrelative:surfaceModeller.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{45FC9E9D-0287-4F4F-82FC-A29F2B8C7403}|CPS511_Assignment2.vcxproj|C:\\Users\\Alden\\Desktop\\CPS511\\Assignment 2\\cps511A2\\surfaceModeller.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{45FC9E9D-0287-4F4F-82FC-A29F2B8C7403}|CPS511_Assignment2.vcxproj|solutionrelative:surfaceModeller.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{45FC9E9D-0287-4F4F-82FC-A29F2B8C7403}|CPS511_Assignment2.vcxproj|C:\\Users\\Alden\\Desktop\\CPS511\\Assignment 2\\cps511A2\\subdivcurve.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{45FC9E9D-0287-4F4F-82FC-A29F2B8C7403}|CPS511_Assignment2.vcxproj|solutionrelative:subdivcurve.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     }
   ],
   "DocumentGroupContainers": [
@@ -13,19 +22,43 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 2,
           "Children": [
             {
               "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "subdivcurve.h",
+              "DocumentMoniker": "C:\\Users\\Alden\\Desktop\\CPS511\\Assignment 2\\cps511A2\\subdivcurve.h",
+              "RelativeDocumentMoniker": "subdivcurve.h",
+              "ToolTip": "C:\\Users\\Alden\\Desktop\\CPS511\\Assignment 2\\cps511A2\\subdivcurve.h",
+              "RelativeToolTip": "subdivcurve.h",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2024-11-15T21:10:22.926Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "surfaceModeller.h",
+              "DocumentMoniker": "C:\\Users\\Alden\\Desktop\\CPS511\\Assignment 2\\cps511A2\\surfaceModeller.h",
+              "RelativeDocumentMoniker": "surfaceModeller.h",
+              "ToolTip": "C:\\Users\\Alden\\Desktop\\CPS511\\Assignment 2\\cps511A2\\surfaceModeller.h",
+              "RelativeToolTip": "surfaceModeller.h",
+              "ViewState": "AgIAAE0AAAAAAAAAAAAuwF4AAAAZAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2024-11-15T21:10:22.275Z"
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "Microsoft.CppCommon.targets",
-              "DocumentMoniker": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Microsoft\\VC\\v170\\Microsoft.CppCommon.targets",
-              "RelativeDocumentMoniker": "..\\..\\..\\..\\..\\..\\Program Files\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Microsoft\\VC\\v170\\Microsoft.CppCommon.targets",
-              "ToolTip": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Microsoft\\VC\\v170\\Microsoft.CppCommon.targets",
-              "RelativeToolTip": "..\\..\\..\\..\\..\\..\\Program Files\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Microsoft\\VC\\v170\\Microsoft.CppCommon.targets",
-              "ViewState": "AgIAAJYAAAAAAAAAAAAswKUAAAAEAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003801|",
-              "WhenOpened": "2024-11-15T20:00:48.158Z",
+              "Title": "surfaceModeller.cpp",
+              "DocumentMoniker": "C:\\Users\\Alden\\Desktop\\CPS511\\Assignment 2\\cps511A2\\surfaceModeller.cpp",
+              "RelativeDocumentMoniker": "surfaceModeller.cpp",
+              "ToolTip": "C:\\Users\\Alden\\Desktop\\CPS511\\Assignment 2\\cps511A2\\surfaceModeller.cpp",
+              "RelativeToolTip": "surfaceModeller.cpp",
+              "ViewState": "AgIAAPYDAAAAAAAAAAAAwAMEAABGAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2024-11-15T21:10:21.4Z",
               "EditorCaption": ""
             }
           ]
