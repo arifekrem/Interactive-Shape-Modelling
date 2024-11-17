@@ -6,7 +6,7 @@
 #include <string.h>
 #include "surfaceModeller.h"
 #include "subdivcurve.h"
-
+#include <algorithm>
 
 GLdouble worldLeft = -12;
 GLdouble worldRight = 12;
@@ -30,21 +30,32 @@ int window2D, window3D;
 int window3DSizeX = 800, window3DSizeY = 600;
 GLdouble aspect = (GLdouble)window3DSizeX / window3DSizeY;
 
+// Camera Control Variables
+float cameraAzimuth = 0.0f;     // Azimuth angle in degrees
+float cameraElevation = 30.0f;  // Elevation angle in degrees
+float cameraRadius = 10.0f;     // Camera distance from origin
+float rotationSpeed = 0.2f;     // Speed of rotation
+float zoomSpeed = 0.5f;         // Speed of zooming
+float elevationLimit = 60.0f;   // Maximum elevation angle
 
+// Mouse Interaction
+bool isRotating = false;
+bool isElevating = false;
+bool isZooming = false;
+int lastMouseX, lastMouseY;
 
-int main(int argc, char* argv[])
-{
-	glutInit(&argc, (char **)argv); 
-	glutInitDisplayMode (GLUT_DOUBLE | GLUT_RGB);
-	glutInitWindowSize(glutWindowWidth,glutWindowHeight);
-	glutInitWindowPosition(50,100);  
-	
+int main(int argc, char* argv[]) {
+	glutInit(&argc, argv);
+	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);  // Added GLUT_DEPTH for 3D rendering
+	glutInitWindowSize(glutWindowWidth, glutWindowHeight);
+	glutInitWindowPosition(50, 100);
+
 	// The 2D Window
-	window2D = glutCreateWindow("Profile Curve"); 
+	window2D = glutCreateWindow("Profile Curve");
 	glutDisplayFunc(display2D);
 	glutReshapeFunc(reshape2D);
 	// Initialize the 2D profile curve system
-	init2DCurveWindow(); 
+	init2DCurveWindow();
 	// A few input handlers
 	glutMouseFunc(mouseButtonHandler2D);
 	glutMotionFunc(mouseMotionHandler2D);
@@ -52,21 +63,21 @@ int main(int argc, char* argv[])
 	glutMouseWheelFunc(mouseScrollWheelHandler2D);
 	glutSpecialFunc(specialKeyHandler2D);
 	glutKeyboardFunc(keyboardHandler2D);
-	
+
 	// The 3D Window
-	window3D = glutCreateWindow("Surface of Revolution"); 
-	glutPositionWindow(900,100);  
+	window3D = glutCreateWindow("Surface of Revolution");
+	glutPositionWindow(900, 100);
 	glutDisplayFunc(display3D);
 	glutReshapeFunc(reshape3D);
-	glutMouseFunc(mouseButtonHandler3D);
-	glutMouseWheelFunc(mouseScrollWheelHandler3D);
-	glutMotionFunc(mouseMotionHandler3D);
-	glutKeyboardFunc(keyboardHandler3D);
+	glutMouseFunc(mouseButtonHandler3D);  // Updated to support camera controls
+	glutMouseWheelFunc(mouseScrollWheelHandler3D);  // Updated for zooming
+	glutMotionFunc(mouseMotionHandler3D);  // Updated for rotation and elevation
+	glutKeyboardFunc(keyboardHandler3D);  // Updated for toggling drawing styles
 	// Initialize the 3D system
 	init3DSurfaceWindow();
 
-	// Annnd... ACTION!!
-	glutMainLoop(); 
+	// Start the GLUT Main Loop
+	glutMainLoop();
 
 	return 0;
 }
@@ -250,6 +261,19 @@ void worldToCameraCoordiantes(GLdouble xWorld, GLdouble yWorld, GLdouble *xcam, 
 	double wvCenterY = wvBottom + (wvTop   - wvBottom)/2.0;
 	*xcam = worldCenterX - wvCenterX + xWorld;
 	*ycam = worldCenterY - wvCenterY + yWorld;
+}
+
+// Functions to Update Camera 
+void updateCameraPosition() {
+	float radAzimuth = cameraAzimuth * M_PI / 180.0f;  // Convert azimuth to radians
+	float radElevation = cameraElevation * M_PI / 180.0f;  // Convert elevation to radians
+
+	float camX = cameraRadius * cos(radElevation) * sin(radAzimuth);
+	float camY = cameraRadius * sin(radElevation);
+	float camZ = cameraRadius * cos(radElevation) * cos(radAzimuth);
+
+	glLoadIdentity();
+	gluLookAt(camX, camY, camZ, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
 }
 
 int currentButton;
@@ -573,9 +597,6 @@ boolean varrayAllocated = false;
 
 GLdouble fov = 60.0;
 
-int lastMouseX;
-int lastMouseY;
-
 boolean drawAsLines = false;
 boolean drawAsPoints = false;
 boolean drawNormals = false;
@@ -620,15 +641,14 @@ void init3DSurfaceWindow()
 
 void reshape3D(int w, int h)
 {
-	glutWindowWidth = (GLsizei) w;
-	glutWindowHeight = (GLsizei) h;
+	glutWindowWidth = (GLsizei)w;
+	glutWindowHeight = (GLsizei)h;
 	glViewport(0, 0, glutWindowWidth, glutWindowHeight);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(fov,aspect,zNear,zFar);
+	gluPerspective(fov, (float)w / (float)h, zNear, zFar);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	gluLookAt(eyeX, eyeY, eyeZ, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 }
 
 void display3D()
@@ -638,6 +658,9 @@ void display3D()
 	glLoadIdentity();
 	// Set up the Viewing Transformation (V matrix)	
 	gluLookAt(eyeX, eyeY, eyeZ, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+
+	// Update Camera Position
+	updateCameraPosition();
 
 	drawGround();
 
@@ -967,41 +990,49 @@ void mouseButtonHandler3D(int button, int state, int x, int y)
 	currentButton = button;
 	lastMouseX = x;
 	lastMouseY = y;
-	switch (button)
-	{
-	case GLUT_MIDDLE_BUTTON:
-		if (state == GLUT_DOWN) 
-		{
-           // Fill in code for zooming or use scroll wheel
-		}
-	break;
-	default:
-		break;
+
+	if (button == GLUT_LEFT_BUTTON) {
+		isRotating = (state == GLUT_DOWN);
+	}
+	else if (button == GLUT_RIGHT_BUTTON) {
+		isElevating = (state == GLUT_DOWN);
+	}
+	else if (button == GLUT_MIDDLE_BUTTON) {
+		isZooming = (state == GLUT_DOWN);
 	}
 }
 
 void mouseScrollWheelHandler3D(int button, int dir, int xMouse, int yMouse) 
 {
-	// Fill in this code for zooming in and out
-
+	if (dir > 0) {
+		cameraRadius -= zoomSpeed;  // Zoom In
+	}
+	else {
+		cameraRadius += zoomSpeed;  // Zoom Out
+	}
+	cameraRadius = (std::max)(1.0f, cameraRadius);  // Prevent zooming too close
+	glutPostRedisplay();
 }
 
 void mouseMotionHandler3D(int x, int y)
 {
 	int dx = x - lastMouseX;
 	int dy = y - lastMouseY;
-	if (currentButton == GLUT_LEFT_BUTTON)
-	{
-      // Fill in this code to control camera "orbiting" around surface
+
+	if (isRotating) {
+		cameraAzimuth += dx * rotationSpeed;
 	}
-	if (currentButton == GLUT_RIGHT_BUTTON) 
-	{
-      // Fill in this code to control camera elevation. Limit the elevation angle
+
+	if (isElevating) {
+		cameraElevation += dy * rotationSpeed;
+		cameraElevation = std::clamp(cameraElevation, -elevationLimit, elevationLimit);
 	}
-	else if (currentButton == GLUT_MIDDLE_BUTTON) 
-	{
-		// Fill in this code for zooming or ignore and use the scroll wheel
+
+	if (isZooming) {
+		cameraRadius += dy * zoomSpeed;
+		cameraRadius = (std::max)(1.0f, cameraRadius);  // Prevent zooming too close
 	}
+
 	lastMouseX = x;
 	lastMouseY = y;
 	glutPostRedisplay();
@@ -1025,10 +1056,8 @@ void keyboardHandler3D(unsigned char key, int x, int y)
 		drawAsPoints = !drawAsPoints;
 		break;
 	case 'n':
-		if (drawNormals)
-			drawNormals = false;
-		else
-			drawNormals = true;
+		drawNormals = !drawNormals;
+		break;
 	default:
 		break;
 	}

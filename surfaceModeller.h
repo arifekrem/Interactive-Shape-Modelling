@@ -1,8 +1,7 @@
-typedef struct Vector2D
-{
-	GLdouble x, y;
-	GLdouble nx, ny;
-	GLdouble u; // running distance
+typedef struct Vector2D {
+    GLdouble x, y;
+    GLdouble nx, ny;
+    GLdouble u; // running distance
 } Vector2D;
 
 // Struct prototypes
@@ -10,6 +9,12 @@ typedef struct SubdivisionCurve SubdivisionCurve;
 typedef struct Rect Rect;
 typedef struct Button Button;
 typedef struct Vertex Vertex;
+
+/*
+
+    2D Functions
+
+*/
 
 // Function prototypes
 void init2DCurveWindow();
@@ -39,19 +44,30 @@ void computeRunningDistances(SubdivisionCurve* subcurvePointer);
 void computeNormalVectors(SubdivisionCurve* subcurvePointer);
 void init3DSurfaceWindow();
 
-
 /*
 
-	3D Functions
+    3D Functions
 
 */
 
-typedef struct Vector3D
-{
-	GLdouble x, y, z;
+typedef struct Vector3D {
+    GLdouble x, y, z;
 } Vector3D;
 
+// Camera-related variables
+enum RotationMode { NONE, AZIMUTH, ELEVATION }; // Modes for mouse input
+extern RotationMode rotationMode;               // Track current rotation mode
 
+// New variables for camera control
+extern float cameraRadius;       // Distance from the surface
+extern float cameraAzimuth;      // Camera angle around the y-axis
+extern float cameraElevation;    // Camera angle above xz-plane
+extern float zoomSpeed;          // Zoom speed
+extern float rotationSpeed;      // Rotation speed for azimuth/elevation
+extern float elevationLimit;     // Max elevation (e.g., 60 degrees)
+extern int lastMouseX, lastMouseY; // Last mouse coordinates
+
+// Function prototypes
 void display3D();
 void reshape3D(int w, int h);
 void mouseButtonHandler3D(int button, int state, int x, int y);
@@ -59,6 +75,9 @@ void mouseScrollWheelHandler3D(int button, int dir, int xMouse, int yMouse);
 void mouseMotionHandler3D(int xMouse, int yMouse);
 void keyboardHandler3D(unsigned char key, int x, int y);
 
+void updateCameraPosition(); // Updates camera position based on azimuth/elevation
+
+// Functions for drawing the surface
 void buildVertexArray();
 void buildQuadArray();
 void computeQuadNormals();
@@ -69,6 +88,7 @@ float DotProduct(Vector3D lhs, Vector3D rhs);
 Vector3D fourVectorAverage(Vector3D a, Vector3D b, Vector3D c, Vector3D d);
 Vector3D normalize(Vector3D a);
 
+// New functions for drawing styles
 void drawGround();
 void drawQuads();
 void drawQuadsAsLines();
