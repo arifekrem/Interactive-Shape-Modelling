@@ -7,6 +7,12 @@
 #include "surfaceModeller.h"
 #include "subdivcurve.h"
 #include <algorithm>
+#include <vector>
+#include <cstdio>
+#include <cstring>
+#include <cstdlib>
+#include <iostream>
+
 
 GLdouble worldLeft = -12;
 GLdouble worldRight = 12;
@@ -1038,6 +1044,108 @@ void mouseMotionHandler3D(int x, int y)
 	glutPostRedisplay();
 }
 
+void exportMeshToFile(const char* filename) {
+	FILE* file;
+	if (fopen_s(&file, filename, "w") != 0) {
+		printf("Error: Could not open file for writing.\n");
+		return;
+	}
+
+	// Write vertex data
+	fprintf(file, "Vertices\n");
+	for (int i = 0; i < subcurve.numCurvePoints * NUMBEROFSIDES; i++) {
+		Vertex* v = &varray[i];
+		fprintf(file, "%.6f %.6f %.6f %.6f %.6f %.6f\n",
+			v->x, v->y, v->z,
+			v->normal.x, v->normal.y, v->normal.z);
+	}
+
+	// Write quad data
+	fprintf(file, "Quads\n");
+	for (int i = 0; i < (subcurve.numCurvePoints - 1) * NUMBEROFSIDES; i++) {
+		Quad* q = &qarray[i];
+		fprintf(file, "%d %d %d %d\n",
+			q->vertexIndex[0], q->vertexIndex[1],
+			q->vertexIndex[2], q->vertexIndex[3]);
+	}
+
+	fclose(file);
+	printf("Mesh exported to %s\n", filename);
+}
+
+void importMeshFromFile(const char* filename) {
+	FILE* file = nullptr;
+	if (fopen_s(&file, filename, "r") != 0) {
+		printf("Error: Could not open file for reading.\n");
+		return;
+	}
+
+	// Clear existing data
+	if (varrayAllocated) free(varray);
+	if (quadArrayAllocated) free(qarray);
+
+	// Read vertices
+	char line[256];
+	fgets(line, sizeof(line), file); // Skip "Vertices" line
+	std::vector<Vertex> vertices;
+	while (fgets(line, sizeof(line), file) && strncmp(line, "Quads", 5) != 0) {
+		Vertex v;
+		sscanf_s(line, "%lf %lf %lf %lf %lf %lf",
+			&v.x, &v.y, &v.z,
+			&v.normal.x, &v.normal.y, &v.normal.z);
+		vertices.push_back(v);
+	}
+
+	// Allocate and copy vertex data
+	varray = (Vertex*)malloc(vertices.size() * sizeof(Vertex));
+	memcpy(varray, vertices.data(), vertices.size() * sizeof(Vertex));
+	varrayAllocated = true;
+
+	// Read quads
+	std::vector<Quad> quads;
+	while (fgets(line, sizeof(line), file)) {
+		Quad q;
+		sscanf_s(line, "%d %d %d %d",
+			&q.vertexIndex[0], &q.vertexIndex[1],
+			&q.vertexIndex[2], &q.vertexIndex[3]);
+		quads.push_back(q);
+	}
+
+	// Allocate and copy quad data
+	qarray = (Quad*)malloc(quads.size() * sizeof(Quad));
+	memcpy(qarray, quads.data(), quads.size() * sizeof(Quad));
+	quadArrayAllocated = true;
+
+	fclose(file);
+	printf("Mesh imported from %s\n", filename);
+
+	// Check and reallocate vertex array
+	if (varrayAllocated) free(varray);
+	varray = (Vertex*)malloc(vertices.size() * sizeof(Vertex));
+	if (!varray) {
+		printf("Error: Memory allocation for vertices failed.\n");
+		return;
+	}
+	memcpy(varray, vertices.data(), vertices.size() * sizeof(Vertex));
+	varrayAllocated = true;
+
+	// Check and reallocate quad array
+	if (quadArrayAllocated) free(qarray);
+	qarray = (Quad*)malloc(quads.size() * sizeof(Quad));
+	if (!qarray) {
+		printf("Error: Memory allocation for quads failed.\n");
+		return;
+	}
+	memcpy(qarray, quads.data(), quads.size() * sizeof(Quad));
+	quadArrayAllocated = true;
+
+	printf("Mesh imported successfully: %zu vertices, %zu quads\n", vertices.size(), quads.size());
+
+	// Recalculate normals after import
+	computeQuadNormals();
+	computeVertexNormals();
+}
+
 void keyboardHandler3D(unsigned char key, int x, int y)
 {
 	
@@ -1058,8 +1166,16 @@ void keyboardHandler3D(unsigned char key, int x, int y)
 	case 'n':
 		drawNormals = !drawNormals;
 		break;
+	case 'e': // Export mesh
+		exportMeshToFile("mesh.txt");
+		break;
+	case 'i': // Import mesh
+		importMeshFromFile("mesh.txt");
+		break;
 	default:
 		break;
 	}
 	glutPostRedisplay();
 }
+
+
