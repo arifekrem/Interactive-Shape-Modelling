@@ -53,6 +53,10 @@ bool isElevating = false;
 bool isZooming = false;
 int lastMouseX, lastMouseY;
 
+bool meshImported = false;
+int numVertices = 0;
+int numQuads = 0;
+
 typedef struct VertexData {
 	GLdouble x, y, z;   // Position
 	GLdouble nx, ny, nz; // Normal
@@ -694,10 +698,17 @@ void display3D() {
 	drawGround();
 
 	// Build and Draw Surface of Revolution (Quad Mesh)
-	buildVertexArray();
-	buildQuadArray();
-	computeQuadNormals();
-	computeVertexNormals();
+	if (!meshImported) {
+		buildVertexArray();
+		buildQuadArray();
+		computeQuadNormals();
+		computeVertexNormals();
+
+		// Set numVertices and numQuads
+		numVertices = subcurve.numCurvePoints * NUMBEROFSIDES;
+		numQuads = (subcurve.numCurvePoints - 1) * NUMBEROFSIDES;
+	}
+
 	updateBuffers(); // Update the VBOs with new data
 
 	// Draw quad mesh
@@ -735,32 +746,24 @@ void drawGround()
 	glPopMatrix();
 }
 
-
 void buildVertexArray()
 {
 	int row, col;
-	double newX, newZ;
-	GLdouble cumulativeTheta = 0;
-	GLdouble theta = 360 / (GLdouble)NUMBEROFSIDES; // = 18
+	GLdouble cumulativeTheta;
+	GLdouble theta = 360.0 / (GLdouble)NUMBEROFSIDES;
 
-	// Allocate memeory for the vertex array - needs to be done only once
+	// Allocate memory for the vertex array
 	if (!varrayAllocated)
 	{
 		varray = (Vertex*)malloc(subcurve.numCurvePoints * NUMBEROFSIDES * sizeof(Vertex));
 		varrayAllocated = true;
 	}
-	/*  -------------
-		|  |  |  |  |
-		-------------
-		|  |  |  |  |
-		-------------
-		|  |  |  |  |
-		-------------
-		|  |  |  |  |
-		-------------
-	*/
+
+	numVertices = subcurve.numCurvePoints * NUMBEROFSIDES;
+
 	for (row = 0; row < subcurve.numCurvePoints; row++)
 	{
+		cumulativeTheta = 0.0;
 		for (col = 0; col < NUMBEROFSIDES; col++)
 		{
 			Vector3D newVector = rotateAroundY(subcurve.curvePoints[row].x, 0, cumulativeTheta);
@@ -784,52 +787,40 @@ Vector3D rotateAroundY(double x, double z, double theta)
 
 void buildQuadArray()
 {
-	int col, row, numQuads;
+	int col, row;
 
 	if (!quadArrayAllocated)
 	{
 		qarray = (Quad*)malloc(sizeof(Quad) * (subcurve.numCurvePoints - 1) * NUMBEROFSIDES);
+		quadArrayAllocated = true;
 	}
-	/*  -------------
-		|  |  |  |  |
-		-------------
-		|  |  |  |  |
-		-------------
-		|  |  |  |  |
-		-------------
-		|  |  |  |  |
-		-------------
-	*/
+
+	numQuads = (subcurve.numCurvePoints - 1) * NUMBEROFSIDES;
+
 	for (row = 0; row < subcurve.numCurvePoints - 1; row++)
 	{
 		for (col = 0; col < NUMBEROFSIDES; col++)
 		{
-			int nextCol;
-
-			// if the we are at last column, then the next column must wrap around back to 0th column
-			if (col == NUMBEROFSIDES - 1)
-				nextCol = 0;
-			else
-				nextCol = col + 1;
+			int nextCol = (col + 1) % NUMBEROFSIDES;
 
 			qarray[row * NUMBEROFSIDES + col].vertexIndex[0] = row * NUMBEROFSIDES + col;
-			numQuads = varray[row * NUMBEROFSIDES + col].numQuads;
-			varray[row * NUMBEROFSIDES + col].quadIndex[numQuads] = row * NUMBEROFSIDES + col;
+			int nQuads = varray[row * NUMBEROFSIDES + col].numQuads;
+			varray[row * NUMBEROFSIDES + col].quadIndex[nQuads] = row * NUMBEROFSIDES + col;
 			varray[row * NUMBEROFSIDES + col].numQuads++;
 
 			qarray[row * NUMBEROFSIDES + col].vertexIndex[1] = (row + 1) * NUMBEROFSIDES + col;
-			numQuads = varray[(row + 1) * NUMBEROFSIDES + col].numQuads;
-			varray[(row + 1) * NUMBEROFSIDES + col].quadIndex[numQuads] = row * NUMBEROFSIDES + col;
+			nQuads = varray[(row + 1) * NUMBEROFSIDES + col].numQuads;
+			varray[(row + 1) * NUMBEROFSIDES + col].quadIndex[nQuads] = row * NUMBEROFSIDES + col;
 			varray[(row + 1) * NUMBEROFSIDES + col].numQuads++;
 
 			qarray[row * NUMBEROFSIDES + col].vertexIndex[2] = (row + 1) * NUMBEROFSIDES + nextCol;
-			numQuads = varray[(row + 1) * NUMBEROFSIDES + nextCol].numQuads;
-			varray[(row + 1) * NUMBEROFSIDES + nextCol].quadIndex[numQuads] = row * NUMBEROFSIDES + col;
+			nQuads = varray[(row + 1) * NUMBEROFSIDES + nextCol].numQuads;
+			varray[(row + 1) * NUMBEROFSIDES + nextCol].quadIndex[nQuads] = row * NUMBEROFSIDES + col;
 			varray[(row + 1) * NUMBEROFSIDES + nextCol].numQuads++;
 
 			qarray[row * NUMBEROFSIDES + col].vertexIndex[3] = row * NUMBEROFSIDES + nextCol;
-			numQuads = varray[row * NUMBEROFSIDES + nextCol].numQuads;
-			varray[row * NUMBEROFSIDES + nextCol].quadIndex[numQuads] = row * NUMBEROFSIDES + col;
+			nQuads = varray[row * NUMBEROFSIDES + nextCol].numQuads;
+			varray[row * NUMBEROFSIDES + nextCol].quadIndex[nQuads] = row * NUMBEROFSIDES + col;
 			varray[row * NUMBEROFSIDES + nextCol].numQuads++;
 		}
 	}
@@ -837,67 +828,50 @@ void buildQuadArray()
 
 void computeQuadNormals()
 {
-	for (int row = 0; row < subcurve.numCurvePoints - 1; row++)
+	for (int i = 0; i < numQuads; i++)
 	{
-		for (int col = 0; col < NUMBEROFSIDES; col++)
+		Quad* quad = &qarray[i];
+		Vector3D normal = { 0.0, 0.0, 0.0 };
+		for (int j = 0, k = 1; j < 4; j++, k++)
 		{
-			double normal_x = 0.0;
-			double normal_y = 0.0;
-			double normal_z = 0.0;
+			if (k == 4) k = 0;
+			Vertex* vi = &varray[quad->vertexIndex[j]];
+			Vertex* vj = &varray[quad->vertexIndex[k]];
 
-			int i, j;
-			Vertex* vi;
-			Vertex* vj;
-			Vector3D normal;
-			normal.x = normal.y = normal.z = 0;
-
-			for (i = 0, j = 1; i < 4; i++, j++)
-			{
-				if (j == 4) j = 0;
-				vi = &varray[qarray[row * NUMBEROFSIDES + col].vertexIndex[i]];
-				vj = &varray[qarray[row * NUMBEROFSIDES + col].vertexIndex[j]];
-
-				normal.x += (((vi->z) + (vj->z)) * ((vj->y) - (vi->y)));
-				normal.y += (((vi->x) + (vj->x)) * ((vj->z) - (vi->z)));
-				normal.z += (((vi->y) + (vj->y)) * ((vj->x) - (vi->x)));
-			}
-			// Flip them - must be a problem in code above
-			normal.x *= -1.0;
-			normal.y *= -1.0;
-			normal.z *= -1.0;
-			Vector3D normalized = normalize(normal);
-			qarray[row * NUMBEROFSIDES + col].normal = normalized;
+			normal.x += (vi->z + vj->z) * (vj->y - vi->y);
+			normal.y += (vi->x + vj->x) * (vj->z - vi->z);
+			normal.z += (vi->y + vj->y) * (vj->x - vi->x);
 		}
+		// Flip them - must be a problem in code above
+		normal.x *= -1.0;
+		normal.y *= -1.0;
+		normal.z *= -1.0;
+		qarray[i].normal = normalize(normal);
 	}
 }
 
 void computeVertexNormals()
 {
-	int col, row, i;
-	Vector3D vn;
-
-	for (row = 0; row < subcurve.numCurvePoints; row++)
+	for (int i = 0; i < numVertices; i++)
 	{
-		for (col = 0; col < NUMBEROFSIDES; col++)
-		{
-			int numQuads = varray[row * NUMBEROFSIDES + col].numQuads;
-			vn.x = vn.y = vn.z = 0;
+		Vertex* vertex = &varray[i];
+		Vector3D vn = { 0.0, 0.0, 0.0 };
 
-			for (int i = 0; i < numQuads; i++)
-			{
-				int quadIndex = varray[row * NUMBEROFSIDES + col].quadIndex[i];
+		for (int j = 0; j < vertex->numQuads; j++)
+		{
+			int quadIndex = vertex->quadIndex[j];
+			if (quadIndex >= 0 && quadIndex < numQuads) {
 				vn.x += qarray[quadIndex].normal.x;
 				vn.y += qarray[quadIndex].normal.y;
 				vn.z += qarray[quadIndex].normal.z;
 			}
-			varray[row * NUMBEROFSIDES + col].normal = normalize(vn);
 		}
+		vertex->normal = normalize(vn);
 	}
 }
 
 void updateBuffers() {
 	// Create VertexData array
-	int numVertices = subcurve.numCurvePoints * NUMBEROFSIDES;
 	VertexData* vertexData = (VertexData*)malloc(sizeof(VertexData) * numVertices);
 	for (int i = 0; i < numVertices; i++) {
 		vertexData[i].x = varray[i].x;
@@ -914,7 +888,6 @@ void updateBuffers() {
 	free(vertexData);
 
 	// Update indices
-	int numQuads = (subcurve.numCurvePoints - 1) * NUMBEROFSIDES;
 	numIndices = numQuads * 6; // 6 indices per quad (2 triangles)
 
 	GLuint* indices = (GLuint*)malloc(sizeof(GLuint) * numIndices);
@@ -970,14 +943,12 @@ void drawQuadsAsPoints() {
 	glPointSize(5.0f);
 	glBegin(GL_POINTS);
 
-	for (int row = 0; row < subcurve.numCurvePoints; row++) {
-		for (int col = 0; col < NUMBEROFSIDES; col++) {
-			Vertex* vertex = &varray[row * NUMBEROFSIDES + col];
+	for (int i = 0; i < numVertices; i++) {
+		Vertex* vertex = &varray[i];
 
-			glNormal3f(vertex->normal.x, vertex->normal.y, vertex->normal.z);
+		glNormal3f(vertex->normal.x, vertex->normal.y, vertex->normal.z);
 
-			glVertex3f(vertex->x, vertex->y, vertex->z);
-		}
+		glVertex3f(vertex->x, vertex->y, vertex->z);
 	}
 
 	glEnd();
@@ -986,34 +957,30 @@ void drawQuadsAsPoints() {
 
 void drawQuadsAsLines() {
 	// Iterate through all quads in the quad array
-	for (int row = 0; row < subcurve.numCurvePoints - 1; row++) {
-		for (int col = 0; col < NUMBEROFSIDES; col++) {
-			Quad* quad = &qarray[row * NUMBEROFSIDES + col];
+	for (int i = 0; i < numQuads; i++) {
+		Quad* quad = &qarray[i];
 
-			// Begin drawing lines
-			glBegin(GL_LINE_LOOP);
-			for (int i = 0; i < 4; i++) {
-				Vertex* vertex = &varray[quad->vertexIndex[i]];
-				glVertex3f(vertex->x, vertex->y, vertex->z);
-			}
-			glEnd();
+		// Begin drawing lines
+		glBegin(GL_LINE_LOOP);
+		for (int j = 0; j < 4; j++) {
+			Vertex* vertex = &varray[quad->vertexIndex[j]];
+			glVertex3f(vertex->x, vertex->y, vertex->z);
 		}
+		glEnd();
 	}
 
 	// If drawNormals flag is enabled, draw the normals
 	if (drawNormals) {
 		glColor3f(1.0, 0.0, 0.0); // Set normal vector color to red
-		for (int row = 0; row < subcurve.numCurvePoints - 1; row++) {
-			for (int col = 0; col < NUMBEROFSIDES; col++) {
-				Vertex* vertex = &varray[row * NUMBEROFSIDES + col];
-				Vector3D normal = vertex->normal;
+		for (int i = 0; i < numVertices; i++) {
+			Vertex* vertex = &varray[i];
+			Vector3D normal = vertex->normal;
 
-				// Draw normal vectors as lines originating from the vertex
-				glBegin(GL_LINES);
-				glVertex3f(vertex->x, vertex->y, vertex->z);
-				glVertex3f(vertex->x + normal.x, vertex->y + normal.y, vertex->z + normal.z);
-				glEnd();
-			}
+			// Draw normal vectors as lines originating from the vertex
+			glBegin(GL_LINES);
+			glVertex3f(vertex->x, vertex->y, vertex->z);
+			glVertex3f(vertex->x + normal.x, vertex->y + normal.y, vertex->z + normal.z);
+			glEnd();
 		}
 	}
 }
@@ -1138,6 +1105,7 @@ void exportMeshToFile(const char* filename) {
 	printf("Mesh exported to %s\n", filename);
 }
 
+// Update the importMeshFromFile function
 void importMeshFromFile(const char* filename) {
 	FILE* file = nullptr;
 	if (fopen_s(&file, filename, "r") != 0) {
@@ -1146,8 +1114,14 @@ void importMeshFromFile(const char* filename) {
 	}
 
 	// Clear existing data
-	if (varrayAllocated) free(varray);
-	if (quadArrayAllocated) free(qarray);
+	if (varrayAllocated) {
+		free(varray);
+		varrayAllocated = false;
+	}
+	if (quadArrayAllocated) {
+		free(qarray);
+		quadArrayAllocated = false;
+	}
 
 	// Read vertices
 	char line[256];
@@ -1158,12 +1132,19 @@ void importMeshFromFile(const char* filename) {
 		sscanf_s(line, "%lf %lf %lf %lf %lf %lf",
 			&v.x, &v.y, &v.z,
 			&v.normal.x, &v.normal.y, &v.normal.z);
+		v.numQuads = 0; // Initialize numQuads
 		vertices.push_back(v);
 	}
 
 	// Allocate and copy vertex data
-	varray = (Vertex*)malloc(vertices.size() * sizeof(Vertex));
-	memcpy(varray, vertices.data(), vertices.size() * sizeof(Vertex));
+	numVertices = static_cast<int>(vertices.size());
+	varray = (Vertex*)malloc(numVertices * sizeof(Vertex));
+	if (!varray) {
+		printf("Error: Memory allocation for vertices failed.\n");
+		fclose(file);
+		return;
+	}
+	memcpy(varray, vertices.data(), numVertices * sizeof(Vertex));
 	varrayAllocated = true;
 
 	// Read quads
@@ -1177,38 +1158,43 @@ void importMeshFromFile(const char* filename) {
 	}
 
 	// Allocate and copy quad data
-	qarray = (Quad*)malloc(quads.size() * sizeof(Quad));
-	memcpy(qarray, quads.data(), quads.size() * sizeof(Quad));
+	numQuads = static_cast<int>(quads.size());
+	qarray = (Quad*)malloc(numQuads * sizeof(Quad));
+	if (!qarray) {
+		printf("Error: Memory allocation for quads failed.\n");
+		fclose(file);
+		return;
+	}
+	memcpy(qarray, quads.data(), numQuads * sizeof(Quad));
 	quadArrayAllocated = true;
 
 	fclose(file);
-	printf("Mesh imported from %s\n", filename);
+	printf("Mesh imported successfully: %d vertices, %d quads\n", numVertices, numQuads);
 
-	// Check and reallocate vertex array
-	if (varrayAllocated) free(varray);
-	varray = (Vertex*)malloc(vertices.size() * sizeof(Vertex));
-	if (!varray) {
-		printf("Error: Memory allocation for vertices failed.\n");
-		return;
+	// Initialize numQuads and quadIndex for each vertex
+	for (int i = 0; i < numVertices; i++) {
+		varray[i].numQuads = 0;
 	}
-	memcpy(varray, vertices.data(), vertices.size() * sizeof(Vertex));
-	varrayAllocated = true;
 
-	// Check and reallocate quad array
-	if (quadArrayAllocated) free(qarray);
-	qarray = (Quad*)malloc(quads.size() * sizeof(Quad));
-	if (!qarray) {
-		printf("Error: Memory allocation for quads failed.\n");
-		return;
+	for (int i = 0; i < numQuads; i++) {
+		for (int j = 0; j < 4; j++) {
+			int vIndex = qarray[i].vertexIndex[j];
+			if (vIndex >= 0 && vIndex < numVertices) {
+				int nQuads = varray[vIndex].numQuads;
+				if (nQuads < 4) { // Assuming max 4 quads per vertex
+					varray[vIndex].quadIndex[nQuads] = i;
+					varray[vIndex].numQuads++;
+				}
+			}
+		}
 	}
-	memcpy(qarray, quads.data(), quads.size() * sizeof(Quad));
-	quadArrayAllocated = true;
-
-	printf("Mesh imported successfully: %zu vertices, %zu quads\n", vertices.size(), quads.size());
 
 	// Recalculate normals after import
 	computeQuadNormals();
 	computeVertexNormals();
+
+	// Set meshImported flag
+	meshImported = true;
 }
 
 void keyboardHandler3D(unsigned char key, int x, int y)
@@ -1242,5 +1228,3 @@ void keyboardHandler3D(unsigned char key, int x, int y)
 	}
 	glutPostRedisplay();
 }
-
-
