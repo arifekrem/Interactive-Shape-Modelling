@@ -697,17 +697,15 @@ void display3D() {
 
 	drawGround();
 
-	// Build and Draw Surface of Revolution (Quad Mesh)
-	if (!meshImported) {
-		buildVertexArray();
-		buildQuadArray();
-		computeQuadNormals();
-		computeVertexNormals();
+	// Always rebuild the mesh from the current subcurve
+	buildVertexArray();
+	buildQuadArray();
+	computeQuadNormals();
+	computeVertexNormals();
 
-		// Set numVertices and numQuads
-		numVertices = subcurve.numCurvePoints * NUMBEROFSIDES;
-		numQuads = (subcurve.numCurvePoints - 1) * NUMBEROFSIDES;
-	}
+	// Set numVertices and numQuads
+	numVertices = subcurve.numCurvePoints * NUMBEROFSIDES;
+	numQuads = (subcurve.numCurvePoints - 1) * NUMBEROFSIDES;
 
 	updateBuffers(); // Update the VBOs with new data
 
@@ -1083,26 +1081,16 @@ void exportMeshToFile(const char* filename) {
 		return;
 	}
 
-	// Write vertex data
-	fprintf(file, "Vertices\n");
-	for (int i = 0; i < subcurve.numCurvePoints * NUMBEROFSIDES; i++) {
-		Vertex* v = &varray[i];
-		fprintf(file, "%.6f %.6f %.6f %.6f %.6f %.6f\n",
-			v->x, v->y, v->z,
-			v->normal.x, v->normal.y, v->normal.z);
+	// Write control points
+	fprintf(file, "ControlPoints\n");
+	fprintf(file, "%d\n", subcurve.numControlPoints);
+	for (int i = 0; i < subcurve.numControlPoints; i++) {
+		fprintf(file, "%.6f %.6f\n", subcurve.controlPoints[i].x, subcurve.controlPoints[i].y);
 	}
-
-	// Write quad data
-	fprintf(file, "Quads\n");
-	for (int i = 0; i < (subcurve.numCurvePoints - 1) * NUMBEROFSIDES; i++) {
-		Quad* q = &qarray[i];
-		fprintf(file, "%d %d %d %d\n",
-			q->vertexIndex[0], q->vertexIndex[1],
-			q->vertexIndex[2], q->vertexIndex[3]);
-	}
+	fprintf(file, "%d\n", subcurve.subdivisionSteps);
 
 	fclose(file);
-	printf("Mesh exported to %s\n", filename);
+	printf("Curve exported to %s\n", filename);
 }
 
 // Update the importMeshFromFile function
@@ -1113,93 +1101,55 @@ void importMeshFromFile(const char* filename) {
 		return;
 	}
 
-	// Clear existing data
-	if (varrayAllocated) {
-		free(varray);
-		varrayAllocated = false;
-	}
-	if (quadArrayAllocated) {
-		free(qarray);
-		quadArrayAllocated = false;
-	}
-
-	// Read vertices
+	// Read control points
 	char line[256];
-	fgets(line, sizeof(line), file); // Skip "Vertices" line
-	std::vector<Vertex> vertices;
-	while (fgets(line, sizeof(line), file) && strncmp(line, "Quads", 5) != 0) {
-		Vertex v;
-		sscanf_s(line, "%lf %lf %lf %lf %lf %lf",
-			&v.x, &v.y, &v.z,
-			&v.normal.x, &v.normal.y, &v.normal.z);
-		v.numQuads = 0; // Initialize numQuads
-		vertices.push_back(v);
+	fgets(line, sizeof(line), file); // Should be "ControlPoints"
+	if (strncmp(line, "ControlPoints", 13) == 0) {
+		int numCP;
+		fgets(line, sizeof(line), file); // Read number of control points
+		sscanf_s(line, "%d", &numCP);
+		subcurve.numControlPoints = numCP;
+		for (int i = 0; i < numCP; i++) {
+			fgets(line, sizeof(line), file);
+			sscanf_s(line, "%lf %lf", &subcurve.controlPoints[i].x, &subcurve.controlPoints[i].y);
+		}
+		// Read subdivision steps
+		fgets(line, sizeof(line), file);
+		int subdivSteps;
+		sscanf_s(line, "%d", &subdivSteps);
+		subcurve.subdivisionSteps = subdivSteps;
 	}
-
-	// Allocate and copy vertex data
-	numVertices = static_cast<int>(vertices.size());
-	varray = (Vertex*)malloc(numVertices * sizeof(Vertex));
-	if (!varray) {
-		printf("Error: Memory allocation for vertices failed.\n");
+	else {
+		printf("Error: Expected 'ControlPoints' section in the file.\n");
 		fclose(file);
 		return;
 	}
-	memcpy(varray, vertices.data(), numVertices * sizeof(Vertex));
-	varrayAllocated = true;
-
-	// Read quads
-	std::vector<Quad> quads;
-	while (fgets(line, sizeof(line), file)) {
-		Quad q;
-		sscanf_s(line, "%d %d %d %d",
-			&q.vertexIndex[0], &q.vertexIndex[1],
-			&q.vertexIndex[2], &q.vertexIndex[3]);
-		quads.push_back(q);
-	}
-
-	// Allocate and copy quad data
-	numQuads = static_cast<int>(quads.size());
-	qarray = (Quad*)malloc(numQuads * sizeof(Quad));
-	if (!qarray) {
-		printf("Error: Memory allocation for quads failed.\n");
-		fclose(file);
-		return;
-	}
-	memcpy(qarray, quads.data(), numQuads * sizeof(Quad));
-	quadArrayAllocated = true;
 
 	fclose(file);
-	printf("Mesh imported successfully: %d vertices, %d quads\n", numVertices, numQuads);
+	printf("Curve imported successfully: %d control points\n", subcurve.numControlPoints);
 
-	// Initialize numQuads and quadIndex for each vertex
-	for (int i = 0; i < numVertices; i++) {
-		varray[i].numQuads = 0;
-	}
+	// Compute subdivision curve points from control points
+	computeSubdivisionCurve(&subcurve);
+	initControlPointCircles();
 
-	for (int i = 0; i < numQuads; i++) {
-		for (int j = 0; j < 4; j++) {
-			int vIndex = qarray[i].vertexIndex[j];
-			if (vIndex >= 0 && vIndex < numVertices) {
-				int nQuads = varray[vIndex].numQuads;
-				if (nQuads < 4) { // Assuming max 4 quads per vertex
-					varray[vIndex].quadIndex[nQuads] = i;
-					varray[vIndex].numQuads++;
-				}
-			}
-		}
-	}
-
-	// Recalculate normals after import
+	// Rebuild the mesh
+	buildVertexArray();
+	buildQuadArray();
 	computeQuadNormals();
 	computeVertexNormals();
 
-	// Set meshImported flag
-	meshImported = true;
+	// Update buffers
+	updateBuffers();
+
+	// Update both windows
+	glutSetWindow(window2D);
+	glutPostRedisplay();
+	glutSetWindow(window3D);
+	glutPostRedisplay();
 }
 
 void keyboardHandler3D(unsigned char key, int x, int y)
 {
-
 	switch (key)
 	{
 	case 'q':
@@ -1217,11 +1167,11 @@ void keyboardHandler3D(unsigned char key, int x, int y)
 	case 'n':
 		drawNormals = !drawNormals;
 		break;
-	case 'e': // Export mesh
-		exportMeshToFile("mesh.txt");
+	case 'e': // Export curve
+		exportMeshToFile("curve.txt");
 		break;
-	case 'i': // Import mesh
-		importMeshFromFile("mesh.txt");
+	case 'i': // Import curve
+		importMeshFromFile("curve.txt");
 		break;
 	default:
 		break;
